@@ -73,7 +73,7 @@ public class SwaggerCustomConfig {
   @Autowired
   private List<HttpStatus> handledHttpStatusList;
   @Value("${aws.apigateway.uriAuthorizer}")
-  private String uriLambdaAuhtorizer;
+  private String uriLambdaAuthorizer;
   @Value("${aws.apigateway.authorizerCredentials}")
   private String authorizerCredentials;
   @Value("${aws.apigateway.identityValidationExpression}")
@@ -124,7 +124,7 @@ public class SwaggerCustomConfig {
 
     ObjectVendorExtension objVendorExtension = new ObjectVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER);
     objVendorExtension.addProperty(new StringVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER_TYPE, TOKEN));
-    objVendorExtension.addProperty(new StringVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER_AUTHORIZER_URI, uriLambdaAuhtorizer));
+    objVendorExtension.addProperty(new StringVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER_AUTHORIZER_URI, uriLambdaAuthorizer));
     objVendorExtension.addProperty(new StringVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER_AUTHORIZERCREDENTIALS, authorizerCredentials));
     objVendorExtension.addProperty(new StringVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER_IDENTITYVALIDATIONEXPRESSION, identityValidationExpression));
     objVendorExtension.addProperty(new StringVendorExtension(AWS_X_AMAZON_APIGATEWAY_AUTHORIZER_AUTHORIZERRESULTTTLINSECONDS, authorizerResultTtlInSeconds));

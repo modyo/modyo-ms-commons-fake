@@ -10,7 +10,7 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 
 ## Uso en proyectos de integración
 
-### Dependencia
+### Dependencia en repositorio Maven local
 
 ```xml
 <dependency>
@@ -44,5 +44,5 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 | API_GATEWAY_AUTHORIZER_NAME        | Nombre del Lambda Authorizer.                        | ApiGWLambdaAuthorizer
 | MODO_PRIVADO                       | Si está en true, se aplicará el lambda authorizer a los endpoints que no son OPTIONS. Si es falso no se aplica Lambda authorizer. | false
 
-[Modyo ©](../LICENSE)
+Modyo ©
 
