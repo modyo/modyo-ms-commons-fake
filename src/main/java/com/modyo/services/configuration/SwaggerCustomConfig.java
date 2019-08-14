@@ -80,8 +80,8 @@ public class SwaggerCustomConfig {
   private String identityValidationExpression;
   @Value("${aws.apigateway.authorizerResultTtlInSeconds}")
   private String authorizerResultTtlInSeconds;
-  @Value("${aws.apigateway.apiName}")
-  private String apiName;
+  @Value("${spring.application.name}")
+  private String applicationName;
   @Value("${aws.apigateway.authorizerName}")
   private String authorizerName;
   @Value("${modo.privado}")
@@ -167,7 +167,7 @@ public class SwaggerCustomConfig {
         ListVendorExtension("x-amazon-apigateway-binary-media-types", listadoExtensiones);
 
     return new ApiInfo(
-        apiName,
+        applicationName,
         "",
         swaggerContactVersion,
         "",
