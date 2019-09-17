@@ -69,7 +69,7 @@ public class SwaggerCustomConfig {
   private static final String HEADER_ALLOW_METHODS = "Access-Control-Allow-Methods";
   private static final String HEADER_ALLOW_HEADERS = "Access-Control-Allow-Headers";
   private static final String HEADER_VARY = "Vary";
-  
+
   @Autowired
   private List<HttpStatus> handledHttpStatusList;
   @Value("${aws.apigateway.uriAuthorizer}")
@@ -80,6 +80,8 @@ public class SwaggerCustomConfig {
   private String identityValidationExpression;
   @Value("${aws.apigateway.authorizerResultTtlInSeconds}")
   private String authorizerResultTtlInSeconds;
+  @Value("${aws.apigateway.apiName}")
+  private String apiName;
   @Value("${spring.application.name}")
   private String applicationName;
   @Value("${aws.apigateway.authorizerName}")
@@ -167,7 +169,8 @@ public class SwaggerCustomConfig {
         ListVendorExtension("x-amazon-apigateway-binary-media-types", listadoExtensiones);
 
     return new ApiInfo(
-        applicationName,
+      apiName,
+        //applicationName,
         "",
         swaggerContactVersion,
         "",
