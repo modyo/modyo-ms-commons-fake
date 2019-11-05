@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AspectLogger {
 
-  @Around("@within(com.modyo.services.logger.Loggeable) || @annotation(com.modyo.services.logger.Loggeable)")
+  @Around("@within(Loggeable) || @annotation(Loggeable)")
   public Object loggeable(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
     MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
     Method method = methodSignature.getMethod();

@@ -22,14 +22,14 @@ public class AppConfig {
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   @Qualifier("restTemplate")
   public RestTemplate restTemplate() {
-    return restTemplateTimeouts(2000, 2000);
+    return restTemplateTimeouts(2000, 5000);
   }
 
   @Bean
   @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
   @Qualifier("restTemplateBasicAuth")
   public RestTemplate restTemplateBasicAuth(String username, String password) {
-    return restTemplateBasicAuthTimeouts(username, password, 2000, 2000);
+    return restTemplateBasicAuthTimeouts(username, password, 2000, 5000);
   }
 
   @Bean

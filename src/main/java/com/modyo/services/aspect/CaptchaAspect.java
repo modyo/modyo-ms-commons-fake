@@ -17,16 +17,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @ConditionalOnBean(CaptchaValidator.class)
 public class CaptchaAspect {
 
-  private static final String CAPTCHA_HEADER_NAME = "captcha-response";
   @Autowired
   private CaptchaValidator captchaValidator;
 
-  //  @Around("@annotation(RequiresCaptcha)")
-  @Around("@within(com.modyo.services.aspect.RequiresCaptcha) || @annotation(com.modyo.services.aspect.RequiresCaptcha)")
+  @Around("@within(RequiresCaptcha) || @annotation(RequiresCaptcha)")
   public Object validateCaptcha(ProceedingJoinPoint joinPoint) throws Throwable {
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
         .currentRequestAttributes()).getRequest();
-    String captchaResponse = request.getHeader(CAPTCHA_HEADER_NAME);
+    //TODO: Deprecate "captcha-response" and apply "X-Captcha-Response"
+    String captchaResponse = request.getHeader("captcha-response") + request.getHeader("X-Captcha-Response");
     boolean isValidCaptcha = captchaValidator.validateCaptcha(captchaResponse);
     if (!isValidCaptcha) {
       throw new ForbiddenException("Invalid captcha");

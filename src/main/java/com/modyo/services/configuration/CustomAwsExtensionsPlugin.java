@@ -252,6 +252,10 @@ public class CustomAwsExtensionsPlugin implements OperationBuilderPlugin {
     //TODO revisar este método que al parecer está mal implementado
     ObjectVendorExtension responseParametersExt = new ObjectVendorExtension("responseParameters");
     responseParametersExt.addProperty(new StringVendorExtension("method.response.header.Access-Control-Allow-Origin", "'*'"));
+    responseParametersExt.addProperty(new StringVendorExtension(
+      "method.response.header.Access-Control-Expose-Headers",
+      "'" + String.join(",", RESPONSE_HEADERS) + "'"
+    ));
     HandledHttpStatus.getList().forEach(status -> {
       ObjectVendorExtension awsResponse = new ObjectVendorExtension(String.valueOf(status.value()));
       awsResponse.addProperty(new StringVendorExtension("statusCode", String.valueOf(status.value())));

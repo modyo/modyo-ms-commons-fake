@@ -49,6 +49,7 @@ public class SwaggerCustomConfig {
   };
   private static final String[] HEADERS = {
     "Access-Control-Allow-Origin",
+    "Access-Control-Expose-Headers",
     "Content-Disposition",
     "Content-Length",
     "Content-Type",
