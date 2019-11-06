@@ -16,7 +16,7 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 <dependency>
     <groupId>com.modyo.services</groupId>
     <artifactId>modyo-ms-commons</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.12</version>
 </dependency>
 ```
 
@@ -26,9 +26,9 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 <dependency>
     <groupId>com.modyo.services</groupId>
     <artifactId>modyo-ms-commons</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.12</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/lib/modyo-ms-commons-0.0.10.jar</systemPath>
+    <systemPath>${project.basedir}/lib/modyo-ms-commons-0.0.12.jar</systemPath>
 </dependency>
 ```
 
@@ -42,7 +42,6 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 | API_GATEWAY_CONNECTION_ID          | ID del VPC Link.                                     | 9t44js
 | API_GATEWAY_BASE                   | URL base del API GW.                                 | http://consorcio-certification-nlb-int-2987ec161d61becd.elb.us-east-1.amazonaws.com
 | API_GATEWAY_AUTHORIZER_NAME        | Nombre del Lambda Authorizer.                        | ApiGWLambdaAuthorizer
-| MODO_PRIVADO                       | Si está en true, se aplicará el lambda authorizer a los endpoints que no son OPTIONS. Si es falso no se aplica Lambda authorizer. | false
 | CONTACT_NAME                       | Nombre de Contacto Técnico                           | Walter Farina                                                                                                                             |
 | CONTACT_URL                        | Sitio Web de Contacto Técnico                        | http://www.modyo.com                                                                                                                      |
 | CONTACT_EMAIL                      | Correo Electrónico de Contacto Técnico               | walter@modyo.com                                                                                                                          |
