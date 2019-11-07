@@ -8,6 +8,7 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCodes {
+
   INTERNO("1000", "Ha ocurrido un error interno"),
   PARAMETRO_NO_VALIDO("1001", "Parámetro inválido"),
   METODO_NO_SOPORTADO("1002", "Metodo no soportado"),

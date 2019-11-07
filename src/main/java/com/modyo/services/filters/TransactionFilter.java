@@ -56,9 +56,6 @@ public class TransactionFilter implements Filter {
 
   private void addResponseHeaders() {
     response.addHeader("X-Correlation-ID", requestId);
-    // TODO verificar si los dos headers de CORS se pueden eliminar.
-    response.addHeader("Access-Control-Allow-Origin", "'*'");
-    response.addHeader("Vary", "Origin");
     String fatherRequestId = request.getHeader("X-Parents-Correlation-Ids");
     if (fatherRequestId != null) {
       response.addHeader("X-Parents-Correlation-Ids", fatherRequestId);
