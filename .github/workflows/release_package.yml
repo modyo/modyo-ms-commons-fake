@@ -1,6 +1,7 @@
 name: Release (master)
 on:
-  release: published
+  release:
+    types: published
 jobs:
   build:
     runs-on: ubuntu-latest
