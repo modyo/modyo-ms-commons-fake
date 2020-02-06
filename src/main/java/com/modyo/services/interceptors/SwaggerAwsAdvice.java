@@ -10,8 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import springfox.documentation.spring.web.json.Json;
 
 /**
- * Advice para modificar la salida de Swagger y sacar los caracteres con problemas al importar a AWS
- * API GATEWAY
+ * Advice para modificar la salida de Swagger y sacar los caracteres con problemas al importar a AWS API GATEWAY
  */
 @ControllerAdvice
 public class SwaggerAwsAdvice implements ResponseBodyAdvice<Object> {

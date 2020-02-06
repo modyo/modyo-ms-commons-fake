@@ -3,6 +3,8 @@ package com.modyo.services.utils;
 import com.modyo.services.exceptions.CustomValidationException;
 import com.modyo.services.exceptions.dto.RejectionDto;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.regex.Pattern;
 import lombok.Getter;
 
@@ -86,14 +88,18 @@ public class Rut {
   private String calcDigitoVerificador() {
     int m = 0;
     int s = 1;
-    for (; numeroInt != 0; numeroInt /= 10) {
-      s = (s + numeroInt % 10 * (9 - m++ % 6)) % 11;
+    int numero = numeroInt;
+    for (; numero != 0; numero /= 10) {
+      s = (s + numero % 10 * (9 - m++ % 6)) % 11;
     }
     return String.valueOf((char) (s != 0 ? s + 47 : 75)).toUpperCase();
   }
 
   private String formatted(boolean withPoints) {
-    return (withPoints ? new DecimalFormat("###,###.###").format(numeroInt) : numeroString) + "-" + dv;
+    return (withPoints ?
+      new DecimalFormat("###,###.###", new DecimalFormatSymbols(new Locale("es", "CL"))).format(numeroInt)
+      : numeroString) +
+      "-" + dv;
   }
 
   private void throwValidationException() {

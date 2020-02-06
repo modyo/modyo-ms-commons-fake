@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +38,12 @@ public class JwtUtils {
           .detail(e.getMessage())
           .build(), e);
     }
+  }
+
+  public static Map getClaims(String accessToken) throws IOException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    Jwt jwt = JwtHelper.decode(accessToken.split(" ")[1]);
+    return objectMapper.readValue(jwt.getClaims(), Map.class);
   }
 
   public static String createJWT(HashMap<String, Object> claims) {
