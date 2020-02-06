@@ -1,7 +1,7 @@
 package com.modyo.services.filters;
 
-import com.modyo.services.filters.dto.RequestLogDto;
-import com.modyo.services.filters.dto.ResponseLogDto;
+import com.modyo.services.loggers.RequestLogger;
+import com.modyo.services.loggers.ResponseLogger;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,39 +26,40 @@ import org.springframework.web.context.request.RequestContextHolder;
  * Filtro para Transacciones HTTP
  */
 @Component
-@Order(2)
+@Order(1)
 public class TransactionFilter implements Filter {
 
-  private static final String[] SENSITIVE_REQUEST_HEADERS = {"authorization"};
-  private HttpServletRequest request;
-  private HttpServletResponse response;
-  private String requestId;
-  private Date tsRequest;
+  @Value("${spring.logger.sensitiverequestheaders}")
+  private String sensitiveRequestHeaders;
   @Value("${spring.application.name}")
   private String applicationName;
+  private HttpServletRequest request;
+  private HttpServletResponse response;
+  private String correlationId;
+  private Date tsRequest;
 
   @Override
   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
-    throws IOException, ServletException {
+      throws IOException, ServletException {
     this.request = (HttpServletRequest) request;
     this.response = (HttpServletResponse) response;
-    generateRequestId();
+    generateCorrelationId();
     logRequest();
     addResponseHeaders();
     chain.doFilter(request, response);
     logResponse();
   }
 
-  private void generateRequestId() {
-    requestId = UUID.randomUUID().toString();
-    RequestContextHolder.currentRequestAttributes().setAttribute("correlationId", requestId, 0);
+  private void generateCorrelationId() {
+    correlationId = UUID.randomUUID().toString();
+    RequestContextHolder.currentRequestAttributes().setAttribute("correlationId", correlationId, 0);
   }
 
   private void addResponseHeaders() {
-    response.addHeader("X-Correlation-ID", requestId);
-    String fatherRequestId = request.getHeader("X-Parents-Correlation-Ids");
-    if (fatherRequestId != null) {
-      response.addHeader("X-Parents-Correlation-Ids", fatherRequestId);
+    response.addHeader("X-Correlation-ID", correlationId);
+    String fatherCorrelationId = request.getHeader("X-Parents-Correlation-Ids");
+    if (fatherCorrelationId != null) {
+      response.addHeader("X-Parents-Correlation-Ids", fatherCorrelationId);
     }
     if (applicationName != null) {
       response.addHeader("X-Application-Name", applicationName);
@@ -66,23 +67,23 @@ public class TransactionFilter implements Filter {
   }
 
   private void logRequest() {
-    RequestLogDto requestLog = RequestLogDto.builder()
-      .method(request.getMethod())
-      .uri(request.getRequestURI())
-      .headers(getRequestHeaders())
-      .parameters(getRequestParameters())
-      .build();
+    RequestLogger requestLog = RequestLogger.builder()
+        .method(request.getMethod())
+        .uri(request.getRequestURI())
+        .headers(getRequestHeaders())
+        .parameters(getRequestParameters())
+        .build();
     requestLog.logInfo();
     tsRequest = requestLog.getTimeStamp();
   }
 
   private void logResponse() {
-    ResponseLogDto.builder()
-      .status(response.getStatus())
-      .headers(getResponseHeaders())
-      .timeStampRequest(tsRequest)
-      .build()
-      .logInfo();
+    ResponseLogger.builder()
+        .status(response.getStatus())
+        .headers(getResponseHeaders())
+        .timeStampRequest(tsRequest)
+        .build()
+        .logInfo();
   }
 
   private Map<String, String> getRequestHeaders() {
@@ -96,10 +97,9 @@ public class TransactionFilter implements Filter {
   }
 
   private String getValueRequestHeader(String name) {
-    if (Arrays.asList(SENSITIVE_REQUEST_HEADERS).contains(name)) {
-      return "*********";
-    }
-    return request.getHeader(name);
+    return Arrays.asList(sensitiveRequestHeaders.toLowerCase().split(",")).contains(name.toLowerCase())
+        ? "*********"
+        : request.getHeader(name);
   }
 
   private Map<String, String> getRequestParameters() {

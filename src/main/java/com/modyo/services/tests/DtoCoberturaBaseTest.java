@@ -1,6 +1,7 @@
 package com.modyo.services.tests;
 
 import com.modyo.services.utils.ClassUtil;
+import com.modyo.services.utils.ClassUtil.FieldBean;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -276,48 +278,45 @@ public class DtoCoberturaBaseTest {
       if (fillFields) {
 
         //Creando atributos, asignandolos con el setter y leyéndolos con el getter
-        Map<String, ClassUtil.FieldBean> fieldsMap = ClassUtil.getFieldsMap(clz);
-        for (Map.Entry<String, ClassUtil.FieldBean> fieldEntry : fieldsMap.entrySet()) {
-          ClassUtil.FieldBean fieldBean = fieldEntry.getValue();
-          Method getter = fieldBean.getGetter();
-          Method setter = fieldBean.getSetter();
-          Field field = fieldBean.getField();
-          Object fieldObj;
-          if (field.getGenericType() instanceof ParameterizedType) {
-            fieldObj = createInstance(field.getType(), (ParameterizedType) field.getGenericType(),
-                fillFields);
-          } else {
-            fieldObj = createInstance(field.getType(), fillFields);
-          }
-          try {
-            setter.invoke(res, fieldObj);
-          } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-          }
-          try {
-            getter.invoke(res);
-          } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-          }
-
-          //Si es lombok, se utilizan los métodos del builder, que se llaman igual que los atributos
-          if (isLombok) {
+        Map<String, FieldBean> fieldsMap = ClassUtil.getFieldsMap(clz);
+        for (Entry<String, FieldBean> fieldEntry : fieldsMap.entrySet()) {
+          FieldBean fieldBean = fieldEntry.getValue();
+          if (!fieldBean.getField().getGenericType().toString().contains(clz.getName())) {
+            Method getter = fieldBean.getGetter();
+            Method setter = fieldBean.getSetter();
+            Field field = fieldBean.getField();
+            Object fieldObj;
+            if (field.getGenericType() instanceof ParameterizedType) {
+              fieldObj = createInstance(field.getType(), (ParameterizedType) field.getGenericType(),
+                  fillFields);
+            } else {
+              fieldObj = createInstance(field.getType(), fillFields);
+            }
             try {
-              Method builderSetter = builderObj.getClass()
-                  .getMethod(field.getName(), field.getType());
-              builderObj = builderSetter.invoke(builderObj, fieldObj);
-              Method toString = builderObj.getClass().getMethod("toString");
-              toString.invoke(builderObj);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+              setter.invoke(res, fieldObj);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+              throw new RuntimeException(e);
+            }
+            try {
+              getter.invoke(res);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
               throw new RuntimeException(e);
             }
 
+            //Si es lombok, se utilizan los métodos del builder, que se llaman igual que los atributos
+            if (isLombok) {
+              try {
+                Method builderSetter = builderObj.getClass().getMethod(field.getName(), field.getType());
+                builderObj = builderSetter.invoke(builderObj, fieldObj);
+                Method toString = builderObj.getClass().getMethod("toString");
+                toString.invoke(builderObj);
+              } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+              }
+            }
           }
-
         }
-
       }
-
     }
 
     return res;

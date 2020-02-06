@@ -1,6 +1,7 @@
 package com.modyo.services.aspect;
 
 import com.modyo.services.capcha.CaptchaValidator;
+import com.modyo.services.capcha.model.CaptchaResponse;
 import com.modyo.services.exceptions.ForbiddenException;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,13 +25,37 @@ public class CaptchaAspect {
   public Object validateCaptcha(ProceedingJoinPoint joinPoint) throws Throwable {
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
         .currentRequestAttributes()).getRequest();
-    //TODO: Deprecate "captcha-response" and apply "X-Captcha-Response"
-    String captchaResponse = request.getHeader("captcha-response") + request.getHeader("X-Captcha-Response");
-    boolean isValidCaptcha = captchaValidator.validateCaptcha(captchaResponse);
-    if (!isValidCaptcha) {
-      throw new ForbiddenException("Invalid captcha");
+    String captchaResponse = request.getHeader("captcha-response") == null ?
+        "" : request.getHeader("captcha-response");
+    String xCaptchaResponse = request.getHeader("X-Captcha-Response") == null ?
+        "" : request.getHeader("X-Captcha-Response");
+    CaptchaResponse isValidCaptcha = captchaValidator
+        .validateCaptcha(captchaResponse + xCaptchaResponse);
+    if (!isValidCaptcha.getSuccess()) {
+      if (isValidCaptcha.getScore() == null) {
+        isValidCaptcha.setScore(0f);
+      }
+      throw new ForbiddenException(exceptionCaptchaText(isValidCaptcha.getScore().toString(),
+          isValidCaptcha.getErrorCodes().get(0),
+          captchaResponse,
+          xCaptchaResponse
+      ));
     }
     return joinPoint.proceed();
+  }
+
+  private String exceptionCaptchaText(String score,
+      String errorCode,
+      String captchaResponse,
+      String xCaptchaResponse) {
+    StringBuilder result = new StringBuilder();
+    result.append("{");
+    result.append("score: " + score + ",");
+    result.append("errorCode: " + errorCode + ",");
+    result.append("captcha-response: " + captchaResponse + ",");
+    result.append("X-Captcha-Response: " + xCaptchaResponse);
+    result.append("}");
+    return result.toString();
   }
 
 }

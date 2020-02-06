@@ -76,7 +76,8 @@ public class CustomAwsExtensionsPlugin implements OperationBuilderPlugin {
     "X-Api-Key",
     "X-Amz-Security-Token",
     "Vary",
-    "captcha-response"
+    "captcha-response",
+    "X-Captcha-Response"
   };
 
   private static HashMap<String, String> responseParameters;

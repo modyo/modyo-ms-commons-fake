@@ -1,5 +1,6 @@
-package com.modyo.services.dto;
+package com.modyo.services.loggers;
 
+import com.modyo.services.dto.Dto;
 import java.util.Date;
 import java.util.Objects;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Slf4j
 @Getter
 @Setter
-public class LogDto extends Dto {
+public class Logger extends Dto {
 
   private String level;
   private String type;
@@ -35,4 +36,5 @@ public class LogDto extends Dto {
     ).toString();
     this.timeStamp = new Date(System.currentTimeMillis());
   }
+
 }

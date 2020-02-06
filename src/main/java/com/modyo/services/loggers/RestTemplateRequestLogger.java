@@ -1,22 +1,21 @@
-package com.modyo.services.filters.dto;
+package com.modyo.services.loggers;
 
-import com.modyo.services.dto.LogDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.Map;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpHeaders;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @Getter
 @Setter
-public class RequestLogDto extends LogDto {
+public class RestTemplateRequestLogger extends Logger {
 
   private String method;
   private String uri;
-  private Map<String, String> headers;
-  private Map<String, String> parameters;
+  private HttpHeaders headers;
+  private String body;
 
   @Override
   public void setBasicLogInformation() {
