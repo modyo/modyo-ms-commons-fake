@@ -16,7 +16,7 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 <dependency>
     <groupId>com.modyo.services</groupId>
     <artifactId>modyo-ms-commons</artifactId>
-    <version>0.0.12</version>
+    <version>0.0.13</version>
 </dependency>
 ```
 
@@ -26,9 +26,9 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 <dependency>
     <groupId>com.modyo.services</groupId>
     <artifactId>modyo-ms-commons</artifactId>
-    <version>0.0.12</version>
+    <version>0.0.13</version>
     <scope>system</scope>
-    <systemPath>${project.basedir}/lib/modyo-ms-commons-0.0.12.jar</systemPath>
+    <systemPath>${project.basedir}/lib/modyo-ms-commons-0.0.13.jar</systemPath>
 </dependency>
 ```
 
@@ -45,6 +45,7 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 | CONTACT_NAME                       | Nombre de Contacto Técnico                           | Walter Farina                                                                                                                             |
 | CONTACT_URL                        | Sitio Web de Contacto Técnico                        | http://www.modyo.com                                                                                                                      |
 | CONTACT_EMAIL                      | Correo Electrónico de Contacto Técnico               | walter@modyo.com                                                                                                                          |
+| SENSITIVE_REQUEST_HEADERS          | Header cuyos valores deben ser ofuscados en los logs | authorization                                                                                                                             |
 
 ### Configuración de Controladores
 
