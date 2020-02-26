@@ -10,7 +10,7 @@
   </parent>
   <groupId>com.modyo.services</groupId>
   <artifactId>modyo-ms-commons</artifactId>
-  <version>0.0.12</version>
+  <version>0.0.13</version>
   <name>Modyo Microservices Commons Dependency</name>
   <description>Common dependency for microservices</description>
 
