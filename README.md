@@ -6,33 +6,70 @@ Artefacto común a todos los microservicios. Incluye elementos transversales de 
 
 ## Instalación
 
-`mvn clean install`
+Los artefactos comunes de Modyo se versionan en Github Packages, de modo que para consumirlos es necesario realizar configuraciones locales.
 
-## Uso en proyectos de integración
+Observacion: Este proyecto sera deprecado, se separaran las dependencias y se administrara el ciclo de desarrollo utilizando Gradle.
 
-### Dependencia en repositorio Maven local
+### Configuracion previa
+Dado que este artefacto esta construido en Maven, es necesario realizar la [configuracion](https://help.github.com/en/packages/using-github-packages-with-your-projects-ecosystem/configuring-apache-maven-for-use-with-github-packages) del ambiente local para poder consumirlo.
+
+Como se describe en el enlace, es necesario crear o modificar el archivo `~/.m2/settings.xml` para agregar las credenciales que permitan obtener el artefacto.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+  <activeProfiles>
+    <activeProfile>modyo-consume-package</activeProfile>
+  </activeProfiles>
+
+  <profiles>
+  	<profile>
+      <id>modyo-consume-package</id>
+      <repositories>
+        <repository>
+          <id>modyo-ms-commons</id>
+          <name>GitHub Modyo Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/modyo/modyo-ms-commons</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <servers>
+    <server>
+      <id>modyo-ms-commons</id>
+      <username>GITHUB_USER</username>
+      <password>GITHUB_TOKEN</password>
+    </server>
+  </servers>
+</settings>
+```
+
+Para obtener el GITHUB_TOKEN, seguir los pasos de la siguiente [guia](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).
+
+### Publicar una nueva version del artefacto
+
+El proceso de publicacion de los packages se realiza de manera automatica gracias a Github Actions, es necesario tener en cuenta que el aumento de versiones
+solo se realiza cuando se prepara un release.
+
+### Consumir el artefacto
+
+Solo es posible consumir el artefacto teniendo la configuracion de Maven mencionada anteriormente.
+
+Para consumir el artefacto solo es necesario agregar la siguiente dependencia:
 
 ```xml
 <dependency>
-    <groupId>com.modyo.services</groupId>
-    <artifactId>modyo-ms-commons</artifactId>
-    <version>0.0.13</version>
+  <groupId>com.modyo.services</groupId>
+  <artifactId>modyo-ms-commons</artifactId>
+  <version>0.0.13</version>
 </dependency>
 ```
 
-### Dependencia local en dir lib/
-
-```xml
-<dependency>
-    <groupId>com.modyo.services</groupId>
-    <artifactId>modyo-ms-commons</artifactId>
-    <version>0.0.13</version>
-    <scope>system</scope>
-    <systemPath>${project.basedir}/lib/modyo-ms-commons-0.0.13.jar</systemPath>
-</dependency>
-```
-
-### Variables de Entorno
+## Variables de Entorno
 
 | Variable                           | Description                                          | Default value                                                                       |
 |:-----------------------------------|:-----------------------------------------------------|:------------------------------------------------------------------------------------|
@@ -65,7 +102,7 @@ public class SomeController {
 
 Para que éste método quede documentado en Swagger y además se pueda registrar automáticamente en el API Gateway, es necesario respetar algunas reglas y agregar elementos al código. Por tanto, es absolutamente necesario hacer lo siguiente:
 
-1. Agregar anotación `@RequestMapping` a nivel de controlador y definir su path. 
+1. Agregar anotación `@RequestMapping` a nivel de controlador y definir su path.
 2. Agregar anotación `@ApiOperation` a nivel de método y definir sus valores `value` y `httpMethod`.
 3. Reemplazar cualquier anotación `@GetMapping` o `@PostMapping` u otra anotación similar a nivel de método por `@RequestMapping` y definir sus valores `path`, `method` y `produces`.
 4. Agregar anotación `@ApiParam` a cada parámetro de tipo path, query o body y definir sus argumentos `name`, `value` y `example`. Se puede agregar de manera opcional el argumento `required` con el valor `true` en caso de ser necesario.
@@ -77,7 +114,7 @@ Si se aplican estas instrucciones al controlador de ejemplo, este queda de la si
 @RestController
 @RequestMapping("/some_controller")
 public class SomeController {
-  
+
   @ApiOperation(value = "Gets something awesome", httpMethod = "OPTIONS")
   @RequestMapping(
       path = "/get_something/{id}",
@@ -86,7 +123,7 @@ public class SomeController {
   )
   public void getSomethingOptions() {
   }
-  
+
   @ApiOperation(value = "Gets something awesome", httpMethod = "GET")
   @RequestMapping(
       path = "/get_something/{id}",
@@ -99,7 +136,7 @@ public class SomeController {
   ) {
     // do something awesome
   }
-  
+
 }
 ```
 
@@ -134,12 +171,12 @@ Se implementa de la siguiente manera:
 @Repository
 @Qualifier("SomeRestRepository")
 public class SomeRestRepository implements RestRepository<SomeRequestDto, SomeResponseDto> {
-  
+
   @Override
   public SomeResponseDto execute(SomeRequestDto request) {
     //call external service and return response
   }
-  
+
 }
 ```
 
@@ -155,7 +192,7 @@ RestTemplate restTemplate = (RestTemplate) applicationContext.getBean(<type>, <a
 
 Las opciones son:
 
-| Type                              | Args                                            | 
+| Type                              | Args                                            |
 |:----------------------------------|:------------------------------------------------|
 | `"restTemplate"`                  |                                                 |
 | `"restTemplateBasicAuth"`         | username, password                              |
@@ -217,10 +254,10 @@ rut.getDv(); // retorna "1" (dígito verificador)
 #### JwtUtils
 Esta clase contiene dos métodos estáticos:
 
-````java
+```java
 public static String getClaimFromAccessToken(String accessToken, String claim) { ... }
 // permite extraer el valor de un claim a partir de un access token en formato JWT.
-````
+```
 ````java
 public static String createJWT(HashMap<String, Object> claims) { ... }
 // permite crear un JWT dummy con claims y valores obtenidos a partir de un HashMap de entrada.
@@ -228,7 +265,7 @@ public static String createJWT(HashMap<String, Object> claims) { ... }
 
 Estos dos métodos son muy útiles para hacer testing, ya que permiten reconstruir diferentes escenarios que tienen que ver con el contenido de un access token.
 
-##### 
+#####
 
 #License
 Copyright (C) Modyo Chile SA - All Rights Reserved
