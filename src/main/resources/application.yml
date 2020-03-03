@@ -1,5 +1,0 @@
-google:
-  recaptcha:
-    minimun: 0
-    secret: "null"
-    disabled: false
