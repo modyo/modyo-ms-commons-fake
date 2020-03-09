@@ -1,6 +1,5 @@
 package com.modyo.services.configuration;
 
-import com.modyo.services.configuration.dto.ErrorLogDto;
 import com.modyo.services.constants.ErrorCodes;
 import com.modyo.services.exceptions.BusinessErrorException;
 import com.modyo.services.exceptions.CustomValidationException;
@@ -9,6 +8,7 @@ import com.modyo.services.exceptions.TechnicalErrorException;
 import com.modyo.services.exceptions.dto.ErrorDto;
 import com.modyo.services.exceptions.dto.ErrorsResponseDto;
 import com.modyo.services.exceptions.dto.RejectionDto;
+import com.modyo.services.loggers.ErrorLogger;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
@@ -58,7 +58,8 @@ public class ExceptionManager {
    */
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
-  public ResponseEntity<ErrorsResponseDto> handleException(MissingServletRequestParameterException e) {
+  public ResponseEntity<ErrorsResponseDto> handleException(
+      MissingServletRequestParameterException e) {
     return handleSimpleException(HttpStatus.UNPROCESSABLE_ENTITY, ErrorCodes.PARAMETRO_FALTANTE, e);
   }
 
@@ -69,8 +70,9 @@ public class ExceptionManager {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ConstraintViolationException e) {
     List<RejectionDto> rejections = e.getConstraintViolations().stream().map(violation ->
-      RejectionDto.builder().source(violation.getPropertyPath().toString()).detail(violation.getMessage()).build())
-      .collect(Collectors.toList());
+        RejectionDto.builder().source(violation.getPropertyPath().toString())
+            .detail(violation.getMessage()).build())
+        .collect(Collectors.toList());
     return handleValidationExceptions(rejections, e);
   }
 
@@ -81,8 +83,9 @@ public class ExceptionManager {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(MethodArgumentNotValidException e) {
     List<RejectionDto> rejections = e.getBindingResult().getFieldErrors().stream().map(fieldError ->
-      RejectionDto.builder().source(fieldError.getField()).detail(fieldError.getDefaultMessage()).build())
-      .collect(Collectors.toList());
+        RejectionDto.builder().source(fieldError.getField()).detail(fieldError.getDefaultMessage())
+            .build())
+        .collect(Collectors.toList());
     return handleValidationExceptions(rejections, e);
   }
 
@@ -109,7 +112,8 @@ public class ExceptionManager {
    */
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
-  public ResponseEntity<ErrorsResponseDto> handleException(HttpRequestMethodNotSupportedException e) {
+  public ResponseEntity<ErrorsResponseDto> handleException(
+      HttpRequestMethodNotSupportedException e) {
     return handleSimpleException(HttpStatus.METHOD_NOT_ALLOWED, ErrorCodes.METODO_NO_SOPORTADO, e);
   }
 
@@ -119,7 +123,8 @@ public class ExceptionManager {
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMediaTypeNotSupportedException e) {
-    return handleSimpleException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO, e);
+    return handleSimpleException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO,
+        e);
   }
 
   /**
@@ -128,7 +133,8 @@ public class ExceptionManager {
   @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMediaTypeNotAcceptableException e) {
-    return handleSimpleException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO, e);
+    return handleSimpleException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO,
+        e);
   }
 
   /**
@@ -141,7 +147,8 @@ public class ExceptionManager {
   }
 
   /**
-   * Excepciones por respuestas no exitosas de servicios externos a causa de un problemas propios de los servicios
+   * Excepciones por respuestas no exitosas de servicios externos a causa de un problemas propios de
+   * los servicios
    */
   @ExceptionHandler(HttpServerErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -150,12 +157,14 @@ public class ExceptionManager {
   }
 
   /**
-   * Excepciones por respuestas no exitosas de un servicio externo a causa de consultas mal formadas
+   * Excepciones por respuestas no exitosas de un servicio externo a causa de consultas mal
+   * formadas
    */
   @ExceptionHandler(HttpClientErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpClientErrorException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.CONSULTA_SERVICIO_MAL_FORMADA, e);
+    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR,
+        ErrorCodes.CONSULTA_SERVICIO_MAL_FORMADA, e);
   }
 
   /**
@@ -164,7 +173,8 @@ public class ExceptionManager {
   @ExceptionHandler(UnknownHttpStatusCodeException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(UnknownHttpStatusCodeException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.SERVICIO_EXTERNO_DESCONOCIDO, e);
+    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR,
+        ErrorCodes.SERVICIO_EXTERNO_DESCONOCIDO, e);
   }
 
   /**
@@ -173,7 +183,8 @@ public class ExceptionManager {
   @ExceptionHandler(ResourceAccessException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ResourceAccessException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.CONSULTA_SERVICIO_EXTERNO, e);
+    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR,
+        ErrorCodes.CONSULTA_SERVICIO_EXTERNO, e);
   }
 
   /**
@@ -194,41 +205,43 @@ public class ExceptionManager {
     return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECNICO, e);
   }
 
-  private ResponseEntity<ErrorsResponseDto> handleSimpleException(HttpStatus httpStatus, ErrorCodes errorCode, Exception e) {
+  private ResponseEntity<ErrorsResponseDto> handleSimpleException(HttpStatus httpStatus,
+      ErrorCodes errorCode, Exception e) {
     ErrorsResponseDto response = ErrorsResponseDto.builder()
-      .error(ErrorDto.builder()
-        .status(Integer.toString(httpStatus.value()))
-        .code(errorCode.getCode())
-        .title(errorCode.getMessage())
-        .detail(e.getMessage())
-        .build())
-      .build();
+        .error(ErrorDto.builder()
+            .status(Integer.toString(httpStatus.value()))
+            .code(errorCode.getCode())
+            .title(errorCode.getMessage())
+            .detail(e.getMessage())
+            .build())
+        .build();
     log(response, e, httpStatus);
     return new ResponseEntity<>(response, httpStatus);
   }
 
-  private ResponseEntity<ErrorsResponseDto> handleValidationExceptions(List<RejectionDto> rejections, Exception e) {
+  private ResponseEntity<ErrorsResponseDto> handleValidationExceptions(
+      List<RejectionDto> rejections, Exception e) {
     ErrorsResponseDto response = ErrorsResponseDto.builder()
-      .errors(rejections.stream().map(rejection ->
-        ErrorDto.builder()
-          .status(Integer.toString(HttpStatus.UNPROCESSABLE_ENTITY.value()))
-          .code(ErrorCodes.PARAMETRO_NO_VALIDO.getCode())
-          .title(ErrorCodes.PARAMETRO_NO_VALIDO.getMessage())
-          .source(rejection.getSource())
-          .detail(rejection.getDetail())
-          .build())
-        .collect(Collectors.toList()))
-      .build();
+        .errors(rejections.stream().map(rejection ->
+            ErrorDto.builder()
+                .status(Integer.toString(HttpStatus.UNPROCESSABLE_ENTITY.value()))
+                .code(ErrorCodes.PARAMETRO_NO_VALIDO.getCode())
+                .title(ErrorCodes.PARAMETRO_NO_VALIDO.getMessage())
+                .source(rejection.getSource())
+                .detail(rejection.getDetail())
+                .build())
+            .collect(Collectors.toList()))
+        .build();
     log(response, e, HttpStatus.UNPROCESSABLE_ENTITY);
     return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 
   private void log(ErrorsResponseDto response, Exception e, HttpStatus httpStatus) {
-    ErrorLogDto errorLog = ErrorLogDto.builder()
-      .className(e.getClass().getName())
-      .exception(e)
-      .responseBody(response)
-      .build();
+    ErrorLogger errorLog = ErrorLogger.builder()
+        .className(e.getClass().getName())
+        .exception(e)
+        .responseBody(response)
+        .build();
     if (httpStatus.is5xxServerError()) {
       errorLog.logError();
     } else {

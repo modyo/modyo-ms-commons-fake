@@ -1,4 +1,4 @@
-package com.modyo.services.configuration;
+package com.modyo.services.interceptors;
 
 import java.io.IOException;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -27,7 +27,7 @@ public class BasicAuthInterceptor implements ClientHttpRequestInterceptor {
 
   @Override
   public ClientHttpResponse intercept(
-      HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution
+    HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution
   ) throws IOException {
     HttpHeaders headers = httpRequest.getHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, encodeCredentialsForBasicAuth(username, password));

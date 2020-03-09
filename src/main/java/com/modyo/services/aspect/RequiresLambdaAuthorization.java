@@ -1,18 +1,15 @@
-package com.modyo.services.logger;
+package com.modyo.services.aspect;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
- * Anotacion no log
+ * Anotación que permite proteger a un metodo al activar autorización mediante AWS Lambda.
  */
-@Documented
-@Target({ElementType.PARAMETER, ElementType.FIELD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NotLog {
+public @interface RequiresLambdaAuthorization {
 
 }

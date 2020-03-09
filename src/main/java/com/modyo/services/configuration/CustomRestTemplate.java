@@ -1,5 +1,6 @@
 package com.modyo.services.configuration;
 
+import com.modyo.services.interceptors.BasicAuthInterceptor;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.http.client.ClientHttpRequestInterceptor;

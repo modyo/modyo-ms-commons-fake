@@ -11,8 +11,9 @@ plugins:
   checkstyle:
     enabled: true
     config:
-      file: ".checkstyle.xml"
+      file: "config/checkstyle.xml"
 exclude_patterns:
   - ".idea/"
+  - "config/"
   - "target/"
   - "**/tests/"
