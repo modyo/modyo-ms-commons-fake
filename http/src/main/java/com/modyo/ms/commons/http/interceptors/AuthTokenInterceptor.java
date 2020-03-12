@@ -1,4 +1,4 @@
-package com.modyo.pending.interceptors;
+package com.modyo.ms.commons.http.interceptors;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

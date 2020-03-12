@@ -1,7 +1,7 @@
-package com.modyo.pending.filters;
+package com.modyo.ms.commons.http.filters;
 
-import com.modyo.services.loggers.RequestLogger;
-import com.modyo.services.loggers.ResponseLogger;
+import com.modyo.ms.commons.http.loggers.RequestLogger;
+import com.modyo.ms.commons.http.loggers.ResponseLogger;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;

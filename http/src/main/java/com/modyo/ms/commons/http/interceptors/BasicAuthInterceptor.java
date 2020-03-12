@@ -1,4 +1,4 @@
-package com.modyo.pending.interceptors;
+package com.modyo.ms.commons.http.interceptors;
 
 import java.io.IOException;
 import org.apache.tomcat.util.codec.binary.Base64;

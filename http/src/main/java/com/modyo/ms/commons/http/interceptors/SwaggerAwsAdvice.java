@@ -1,4 +1,4 @@
-package com.modyo.pending.interceptors;
+package com.modyo.ms.commons.http.interceptors;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;

@@ -1,7 +1,7 @@
-package com.modyo.pending.interceptors;
+package com.modyo.ms.commons.http.interceptors;
 
-import com.modyo.services.loggers.RestTemplateRequestLogger;
-import com.modyo.services.loggers.RestTemplateResponseLogger;
+import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
+import com.modyo.ms.commons.http.loggers.RestTemplateResponseLogger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

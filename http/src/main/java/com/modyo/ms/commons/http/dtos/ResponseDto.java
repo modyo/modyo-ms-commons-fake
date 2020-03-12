@@ -1,5 +1,6 @@
-package com.modyo.commons.core.domain;
+package com.modyo.ms.commons.http.dtos;
 
+import com.modyo.ms.commons.core.dtos.Dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

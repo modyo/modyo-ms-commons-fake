@@ -1,8 +1,8 @@
-package com.modyo.pending.configuration;
+package com.modyo.ms.commons.http.config;
 
-import com.modyo.services.interceptors.AuthTokenInterceptor;
-import com.modyo.services.interceptors.BasicAuthInterceptor;
-import com.modyo.services.interceptors.RestTemplateLoggerInterceptor;
+import com.modyo.ms.commons.http.interceptors.AuthTokenInterceptor;
+import com.modyo.ms.commons.http.interceptors.BasicAuthInterceptor;
+import com.modyo.ms.commons.http.interceptors.RestTemplateLoggerInterceptor;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Qualifier;

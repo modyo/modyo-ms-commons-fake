@@ -1,6 +1,7 @@
-package com.modyo.pending.loggers;
+package com.modyo.ms.commons.http.loggers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.modyo.ms.commons.core.loggers.Logger;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
