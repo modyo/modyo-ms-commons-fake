@@ -1,10 +1,8 @@
-package com.modyo.commons.core.exception.dto;
+package com.modyo.ms.commons.core.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.modyo.commons.core.domain.Dto;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Data;
 
 /**
  * Dto que contiene detalle de un error. Parámetros definidos bajo el Estándar JSON API v1.0. Para
@@ -12,7 +10,6 @@ import lombok.Data;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-@Data
 public class ErrorDto extends Dto {
 
   /**

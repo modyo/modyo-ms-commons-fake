@@ -1,4 +1,4 @@
-package com.modyo.commons.core.constant;
+package com.modyo.ms.commons.core.constants;
 
 import lombok.Getter;
 

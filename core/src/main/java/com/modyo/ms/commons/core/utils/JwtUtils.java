@@ -1,8 +1,8 @@
-package com.modyo.commons.core.util;
+package com.modyo.ms.commons.core.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modyo.commons.core.exception.CustomValidationException;
-import com.modyo.commons.core.exception.dto.RejectionDto;
+import com.modyo.ms.commons.core.dtos.RejectionDto;
+import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

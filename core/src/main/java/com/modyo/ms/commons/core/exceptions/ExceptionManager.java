@@ -1,14 +1,10 @@
-package com.modyo.pending.configuration;
+package com.modyo.ms.commons.core.exceptions;
 
-import com.modyo.services.constants.ErrorCodes;
-import com.modyo.services.exceptions.BusinessErrorException;
-import com.modyo.services.exceptions.CustomValidationException;
-import com.modyo.services.exceptions.ForbiddenException;
-import com.modyo.services.exceptions.TechnicalErrorException;
-import com.modyo.services.exceptions.dto.ErrorDto;
-import com.modyo.services.exceptions.dto.ErrorsResponseDto;
-import com.modyo.services.exceptions.dto.RejectionDto;
-import com.modyo.services.loggers.ErrorLogger;
+import com.modyo.ms.commons.core.constants.ErrorCodes;
+import com.modyo.ms.commons.core.dtos.ErrorDto;
+import com.modyo.ms.commons.core.dtos.ErrorsResponseDto;
+import com.modyo.ms.commons.core.dtos.RejectionDto;
+import com.modyo.ms.commons.core.loggers.ErrorLogger;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;

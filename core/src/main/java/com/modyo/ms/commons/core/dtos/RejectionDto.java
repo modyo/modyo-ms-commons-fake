@@ -1,6 +1,5 @@
-package com.modyo.commons.core.exception.dto;
+package com.modyo.ms.commons.core.dtos;
 
-import com.modyo.commons.core.domain.Dto;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
-package com.modyo.commons.core.util;
+package com.modyo.ms.commons.core.utils;
 
-import com.modyo.commons.core.exception.CustomValidationException;
-import com.modyo.commons.core.exception.dto.RejectionDto;
+import com.modyo.ms.commons.core.dtos.RejectionDto;
+import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;

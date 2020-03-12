@@ -1,4 +1,4 @@
-package com.modyo.commons.core.exception;
+package com.modyo.ms.commons.core.exceptions;
 
 public class ForbiddenException extends RuntimeException {
 

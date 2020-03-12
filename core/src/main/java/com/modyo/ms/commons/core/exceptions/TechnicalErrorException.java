@@ -1,6 +1,6 @@
-package com.modyo.commons.core.exception;
+package com.modyo.ms.commons.core.exceptions;
 
-import com.modyo.commons.core.domain.Dto;
+import com.modyo.ms.commons.core.dtos.Dto;
 import lombok.Getter;
 
 /**
@@ -21,7 +21,6 @@ public class TechnicalErrorException extends DatasourceErrorException {
   }
 
   public TechnicalErrorException(String message, Throwable cause, Dto dataSourceResult) {
-    super(message, cause);
-    this.setDataSourceResult(dataSourceResult);
+    super(message, cause, dataSourceResult);
   }
 }

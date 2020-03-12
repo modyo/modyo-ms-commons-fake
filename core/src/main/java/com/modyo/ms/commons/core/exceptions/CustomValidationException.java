@@ -1,6 +1,6 @@
-package com.modyo.commons.core.exception;
+package com.modyo.ms.commons.core.exceptions;
 
-import com.modyo.commons.core.exception.dto.RejectionDto;
+import com.modyo.ms.commons.core.dtos.RejectionDto;
 import java.util.Collections;
 import java.util.List;
 import lombok.Getter;

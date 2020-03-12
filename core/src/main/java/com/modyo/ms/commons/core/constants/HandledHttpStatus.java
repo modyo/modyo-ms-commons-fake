@@ -1,4 +1,4 @@
-package com.modyo.pending.configuration;
+package com.modyo.ms.commons.core.constants;
 
 import java.util.Arrays;
 import java.util.List;

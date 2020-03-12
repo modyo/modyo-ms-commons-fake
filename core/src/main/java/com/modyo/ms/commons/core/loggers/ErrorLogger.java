@@ -1,11 +1,11 @@
-package com.modyo.pending.loggers;
+package com.modyo.ms.commons.core.loggers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modyo.commons.core.domain.Dto;
-import com.modyo.commons.core.exception.TechnicalErrorException;
-import com.modyo.commons.core.exception.dto.ErrorsResponseDto;
+import com.modyo.ms.commons.core.dtos.Dto;
+import com.modyo.ms.commons.core.dtos.ErrorsResponseDto;
+import com.modyo.ms.commons.core.exceptions.TechnicalErrorException;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

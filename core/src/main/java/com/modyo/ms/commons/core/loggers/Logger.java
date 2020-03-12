@@ -1,6 +1,6 @@
-package com.modyo.pending.loggers;
+package com.modyo.ms.commons.core.loggers;
 
-import com.modyo.commons.core.domain.Dto;
+import com.modyo.ms.commons.core.dtos.Dto;
 import java.util.Date;
 import java.util.Objects;
 import lombok.Getter;
