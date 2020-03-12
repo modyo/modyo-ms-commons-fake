@@ -1,4 +1,4 @@
-package com.modyo.pending.aspect;
+package com.modyo.ms.commons.security.aspects;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

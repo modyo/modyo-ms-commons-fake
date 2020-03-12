@@ -1,4 +1,4 @@
-package com.modyo.commons.core.validation;
+package com.modyo.ms.commons.security.aspects;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

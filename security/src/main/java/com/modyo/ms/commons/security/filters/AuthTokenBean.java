@@ -1,6 +1,6 @@
-package com.modyo.pending.configuration;
+package com.modyo.ms.commons.security.filters;
 
-import com.modyo.services.utils.JwtUtils;
+import com.modyo.ms.commons.core.utils.JwtUtils;
 import java.io.IOException;
 import java.util.Map;
 import org.springframework.context.annotation.Scope;

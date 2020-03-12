@@ -1,0 +1,19 @@
+# For more configuration options visit https://docs.codeclimate.com/docs/advanced-configuration
+
+version: "2"
+plugins:
+  # https://docs.codeclimate.com/docs/sonar-java
+  sonar-java:
+    enabled: true
+    config:
+      sonar.java.source: "8"
+  # https://docs.codeclimate.com/docs/checkstyle
+  checkstyle:
+    enabled: true
+    config:
+      file: "config/checkstyle.xml"
+exclude_patterns:
+  - ".idea/"
+  - "config/"
+  - "target/"
+  - "**/tests/"

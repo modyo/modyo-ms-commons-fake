@@ -1,6 +1,5 @@
-package com.modyo.pending.filters;
+package com.modyo.ms.commons.security.filters;
 
-import com.modyo.services.configuration.AuthTokenBean;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Component;
 
 /**

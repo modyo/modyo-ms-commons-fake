@@ -1,4 +1,4 @@
-package com.modyo.commons.core.validation;
+package com.modyo.ms.commons.security.aspects;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

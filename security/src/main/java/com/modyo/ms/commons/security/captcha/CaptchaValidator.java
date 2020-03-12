@@ -1,6 +1,5 @@
-package com.modyo.pending.capcha;
+package com.modyo.ms.commons.security.captcha;
 
-import com.modyo.services.capcha.model.CaptchaResponse;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

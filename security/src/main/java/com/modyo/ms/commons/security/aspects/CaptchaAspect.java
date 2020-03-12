@@ -1,8 +1,8 @@
-package com.modyo.pending.aspect;
+package com.modyo.ms.commons.security.aspects;
 
-import com.modyo.services.capcha.CaptchaValidator;
-import com.modyo.services.capcha.model.CaptchaResponse;
-import com.modyo.services.exceptions.ForbiddenException;
+import com.modyo.ms.commons.core.exceptions.ForbiddenException;
+import com.modyo.ms.commons.security.captcha.CaptchaResponse;
+import com.modyo.ms.commons.security.captcha.CaptchaValidator;
 import javax.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -21,7 +21,7 @@ public class CaptchaAspect {
   @Autowired
   private CaptchaValidator captchaValidator;
 
-  @Around("@within(RequiresCaptcha) || @annotation(RequiresCaptcha)")
+  @Around("@within(com.modyo.ms.commons.security.aspects.RequiresCaptcha) || @annotation(com.modyo.ms.commons.security.aspects.RequiresCaptcha)")
   public Object validateCaptcha(ProceedingJoinPoint joinPoint) throws Throwable {
     HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
         .currentRequestAttributes()).getRequest();

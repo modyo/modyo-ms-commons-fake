@@ -1,4 +1,4 @@
-package com.modyo.pending.capcha.model;
+package com.modyo.ms.commons.security.captcha;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;

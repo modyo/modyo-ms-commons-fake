@@ -1,4 +1,4 @@
-package com.modyo.pending.capcha.model;
+package com.modyo.ms.commons.security.captcha;
 
 public class CaptchaRequest {
 
