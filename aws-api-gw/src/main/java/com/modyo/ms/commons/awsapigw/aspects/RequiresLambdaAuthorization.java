@@ -1,4 +1,4 @@
-package com.modyo.pending.aspect;
+package com.modyo.ms.commons.awsapigw.aspects;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

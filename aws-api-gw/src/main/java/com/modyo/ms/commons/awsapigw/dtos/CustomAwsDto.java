@@ -1,4 +1,4 @@
-package com.modyo.pending.configuration.dto;
+package com.modyo.ms.commons.awsapigw.dtos;
 
 import lombok.Data;
 

@@ -1,15 +1,12 @@
-package com.modyo.pending.aspect;
+package com.modyo.ms.commons.awsapigw.aspects;
 
-import com.modyo.services.capcha.CaptchaValidator;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@ConditionalOnBean(CaptchaValidator.class)
 public class AuthorizationAspect {
 
   @Around(value = "@annotation(RequiresLambdaAuthorization)")

@@ -1,8 +1,9 @@
-package com.modyo.pending.configuration;
+package com.modyo.ms.commons.awsapigw.components;
 
 import com.google.common.base.Optional;
-import com.modyo.services.aspect.RequiresLambdaAuthorization;
-import com.modyo.services.configuration.dto.CustomAwsDto;
+import com.modyo.ms.commons.core.constants.HandledHttpStatus;
+import com.modyo.ms.commons.awsapigw.aspects.RequiresLambdaAuthorization;
+import com.modyo.ms.commons.awsapigw.dtos.CustomAwsDto;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;

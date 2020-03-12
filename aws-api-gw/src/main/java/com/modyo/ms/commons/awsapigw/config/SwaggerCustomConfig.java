@@ -1,7 +1,8 @@
-package com.modyo.pending.configuration;
+package com.modyo.ms.commons.awsapigw.config;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
+import com.modyo.ms.commons.core.constants.HandledHttpStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
