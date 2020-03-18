@@ -27,7 +27,7 @@ public class Logger extends Dto {
   public void logError() {
     this.level = "error";
     setBasicLogInformation();
-    log.info(this.toJsonString());
+    log.error(this.toJsonString());
   }
 
   public void setBasicLogInformation() {

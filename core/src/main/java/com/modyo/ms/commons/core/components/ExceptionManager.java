@@ -1,13 +1,19 @@
-package com.modyo.ms.commons.core.exceptions;
+package com.modyo.ms.commons.core.components;
 
 import com.modyo.ms.commons.core.constants.ErrorCodes;
 import com.modyo.ms.commons.core.dtos.ErrorDto;
 import com.modyo.ms.commons.core.dtos.ErrorsResponseDto;
 import com.modyo.ms.commons.core.dtos.RejectionDto;
+import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
+import com.modyo.ms.commons.core.exceptions.CustomValidationException;
+import com.modyo.ms.commons.core.exceptions.ForbiddenException;
+import com.modyo.ms.commons.core.exceptions.TechnicalErrorException;
 import com.modyo.ms.commons.core.loggers.ErrorLogger;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -25,6 +31,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.UnknownHttpStatusCodeException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * Clase que engloba la configuración de mapeo de Excepciones a respuestas HTTP
@@ -37,7 +44,7 @@ public class ExceptionManager {
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorsResponseDto> handleException(Exception e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNO, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNO, e);
   }
 
   /**
@@ -46,7 +53,7 @@ public class ExceptionManager {
   @ExceptionHandler(BusinessErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(BusinessErrorException e) {
-    return handleSimpleException(HttpStatus.OK, ErrorCodes.NEGOCIO, e);
+    return logAndGetResponseEntity(HttpStatus.OK, ErrorCodes.NEGOCIO, e);
   }
 
   /**
@@ -56,7 +63,7 @@ public class ExceptionManager {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(
       MissingServletRequestParameterException e) {
-    return handleSimpleException(HttpStatus.UNPROCESSABLE_ENTITY, ErrorCodes.PARAMETRO_FALTANTE, e);
+    return logAndGetResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ErrorCodes.PARAMETRO_FALTANTE, e);
   }
 
   /**
@@ -66,10 +73,20 @@ public class ExceptionManager {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ConstraintViolationException e) {
     List<RejectionDto> rejections = e.getConstraintViolations().stream().map(violation ->
-        RejectionDto.builder().source(violation.getPropertyPath().toString())
+        RejectionDto.builder()
+            .source(violation.getPropertyPath().toString())
             .detail(violation.getMessage()).build())
         .collect(Collectors.toList());
-    return handleValidationExceptions(rejections, e);
+    return logAndGetResponseEntity(rejections, e);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ErrorsResponseDto> handleException(MethodArgumentTypeMismatchException e) {
+    List<RejectionDto> rejections = Collections.singletonList(RejectionDto.builder()
+        .source(e.getName())
+        .detail(e.getMessage())
+        .build());
+    return logAndGetResponseEntity(rejections, e);
   }
 
   /**
@@ -79,10 +96,12 @@ public class ExceptionManager {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(MethodArgumentNotValidException e) {
     List<RejectionDto> rejections = e.getBindingResult().getFieldErrors().stream().map(fieldError ->
-        RejectionDto.builder().source(fieldError.getField()).detail(fieldError.getDefaultMessage())
+        RejectionDto.builder()
+            .source(fieldError.getField())
+            .detail(fieldError.getDefaultMessage())
             .build())
         .collect(Collectors.toList());
-    return handleValidationExceptions(rejections, e);
+    return logAndGetResponseEntity(rejections, e);
   }
 
   /**
@@ -91,7 +110,7 @@ public class ExceptionManager {
   @ExceptionHandler(CustomValidationException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(CustomValidationException e) {
-    return handleValidationExceptions(e.getRejections(), e);
+    return logAndGetResponseEntity(e.getRejections(), e);
   }
 
   /**
@@ -100,7 +119,7 @@ public class ExceptionManager {
   @ExceptionHandler(MissingRequestHeaderException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(MissingRequestHeaderException e) {
-    return handleSimpleException(HttpStatus.BAD_REQUEST, ErrorCodes.HEADER_FALTANTE, e);
+    return logAndGetResponseEntity(HttpStatus.BAD_REQUEST, ErrorCodes.HEADER_FALTANTE, e);
   }
 
   /**
@@ -110,7 +129,7 @@ public class ExceptionManager {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(
       HttpRequestMethodNotSupportedException e) {
-    return handleSimpleException(HttpStatus.METHOD_NOT_ALLOWED, ErrorCodes.METODO_NO_SOPORTADO, e);
+    return logAndGetResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ErrorCodes.METODO_NO_SOPORTADO, e);
   }
 
   /**
@@ -119,8 +138,7 @@ public class ExceptionManager {
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMediaTypeNotSupportedException e) {
-    return handleSimpleException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO,
-        e);
+    return logAndGetResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO, e);
   }
 
   /**
@@ -129,8 +147,7 @@ public class ExceptionManager {
   @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMediaTypeNotAcceptableException e) {
-    return handleSimpleException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO,
-        e);
+    return logAndGetResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO, e);
   }
 
   /**
@@ -139,27 +156,25 @@ public class ExceptionManager {
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMessageNotReadableException e) {
-    return handleSimpleException(HttpStatus.BAD_REQUEST, ErrorCodes.OBJETO_MAL_FORMADO, e);
+    return logAndGetResponseEntity(HttpStatus.BAD_REQUEST, ErrorCodes.OBJETO_MAL_FORMADO, e);
   }
 
   /**
-   * Excepciones por respuestas no exitosas de servicios externos a causa de un problemas propios de
-   * los servicios
+   * Excepciones por respuestas no exitosas de servicios externos a causa de un problemas propios de los servicios
    */
   @ExceptionHandler(HttpServerErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpServerErrorException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.SERVICIO_EXTERNO, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.SERVICIO_EXTERNO, e);
   }
 
   /**
-   * Excepciones por respuestas no exitosas de un servicio externo a causa de consultas mal
-   * formadas
+   * Excepciones por respuestas no exitosas de un servicio externo a causa de consultas mal formadas
    */
   @ExceptionHandler(HttpClientErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpClientErrorException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR,
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
         ErrorCodes.CONSULTA_SERVICIO_MAL_FORMADA, e);
   }
 
@@ -169,7 +184,7 @@ public class ExceptionManager {
   @ExceptionHandler(UnknownHttpStatusCodeException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(UnknownHttpStatusCodeException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR,
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
         ErrorCodes.SERVICIO_EXTERNO_DESCONOCIDO, e);
   }
 
@@ -179,7 +194,7 @@ public class ExceptionManager {
   @ExceptionHandler(ResourceAccessException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ResourceAccessException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR,
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
         ErrorCodes.CONSULTA_SERVICIO_EXTERNO, e);
   }
 
@@ -189,7 +204,7 @@ public class ExceptionManager {
   @ExceptionHandler(ForbiddenException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ForbiddenException e) {
-    return handleSimpleException(HttpStatus.FORBIDDEN, ErrorCodes.ACCESO_PROHIBIDO, e);
+    return logAndGetResponseEntity(HttpStatus.FORBIDDEN, ErrorCodes.ACCESO_PROHIBIDO, e);
   }
 
   /**
@@ -198,11 +213,13 @@ public class ExceptionManager {
   @ExceptionHandler(TechnicalErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(TechnicalErrorException e) {
-    return handleSimpleException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECNICO, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECNICO, e);
   }
 
-  private ResponseEntity<ErrorsResponseDto> handleSimpleException(HttpStatus httpStatus,
-      ErrorCodes errorCode, Exception e) {
+  private ResponseEntity<ErrorsResponseDto> logAndGetResponseEntity(
+      HttpStatus httpStatus,
+      ErrorCodes errorCode,
+      Exception e) {
     ErrorsResponseDto response = ErrorsResponseDto.builder()
         .error(ErrorDto.builder()
             .status(Integer.toString(httpStatus.value()))
@@ -215,8 +232,9 @@ public class ExceptionManager {
     return new ResponseEntity<>(response, httpStatus);
   }
 
-  private ResponseEntity<ErrorsResponseDto> handleValidationExceptions(
-      List<RejectionDto> rejections, Exception e) {
+  private ResponseEntity<ErrorsResponseDto> logAndGetResponseEntity(
+      List<RejectionDto> rejections,
+      Exception e) {
     ErrorsResponseDto response = ErrorsResponseDto.builder()
         .errors(rejections.stream().map(rejection ->
             ErrorDto.builder()
@@ -235,7 +253,7 @@ public class ExceptionManager {
   private void log(ErrorsResponseDto response, Exception e, HttpStatus httpStatus) {
     ErrorLogger errorLog = ErrorLogger.builder()
         .className(e.getClass().getName())
-        .exception(e)
+        .stackTrace(ExceptionUtils.getStackTrace(e))
         .responseBody(response)
         .build();
     if (httpStatus.is5xxServerError()) {
