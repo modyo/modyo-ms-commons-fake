@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Objects;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,7 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
  * Filtro para Transacciones HTTP
  */
 @Component
-@Order(1)
+@Order(2)
 public class TransactionFilter implements Filter {
 
   @Value("${spring.logger.sensitiverequestheaders}")
@@ -43,16 +43,12 @@ public class TransactionFilter implements Filter {
       throws IOException, ServletException {
     this.request = (HttpServletRequest) request;
     this.response = (HttpServletResponse) response;
-    generateCorrelationId();
+    this.correlationId = Objects.requireNonNull(RequestContextHolder.currentRequestAttributes()
+        .getAttribute("correlationId", 0)).toString();
     logRequest();
     addResponseHeaders();
     chain.doFilter(request, response);
     logResponse();
-  }
-
-  private void generateCorrelationId() {
-    correlationId = UUID.randomUUID().toString();
-    RequestContextHolder.currentRequestAttributes().setAttribute("correlationId", correlationId, 0);
   }
 
   private void addResponseHeaders() {
