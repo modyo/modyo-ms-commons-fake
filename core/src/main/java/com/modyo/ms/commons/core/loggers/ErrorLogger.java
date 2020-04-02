@@ -1,6 +1,7 @@
 package com.modyo.ms.commons.core.loggers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.modyo.ms.commons.core.constants.LogTypes;
 import com.modyo.ms.commons.core.dtos.Dto;
 import com.modyo.ms.commons.core.dtos.ErrorsResponseDto;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class ErrorLogger extends Logger {
 
   @Override
   public void setBasicLogInformation() {
-    this.setType("exception");
+    this.setType(LogTypes.EXCEPTION);
     super.setBasicLogInformation();
   }
 }

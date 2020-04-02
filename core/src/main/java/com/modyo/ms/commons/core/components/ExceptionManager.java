@@ -40,7 +40,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class ExceptionManager {
 
   /**
-   * Excepciones   no manejadas
+   * Excepciones no manejadas
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorsResponseDto> handleException(Exception e) {
