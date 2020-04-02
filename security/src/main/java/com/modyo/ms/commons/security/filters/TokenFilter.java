@@ -18,37 +18,33 @@ import org.springframework.stereotype.Component;
  * Filtro para obtener el Token que proviene de Modyo
  */
 @Component
-@Order(2)
+@Order(1)
 public class TokenFilter implements Filter {
 
   @Autowired
   AuthTokenBean authToken;
 
-  private HttpServletRequest request;
-
   @Override
   public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain)
     throws IOException, ServletException {
-    this.request = (HttpServletRequest) request;
-    extractAuthToken();
+    extractAuthToken((HttpServletRequest) request);
     chain.doFilter(request, response);
   }
 
-  private void extractAuthToken() {
-    Map<String, String> headers = getRequestHeaders();
-    String accessToken = headers.get("authorization");
+  private void extractAuthToken(HttpServletRequest request) {
+    String accessToken = getRequestHeaders(request).get("authorization");
     if (accessToken != null) {
       authToken.setAuthToken(accessToken);
     }
   }
 
-  private Map<String, String> getRequestHeaders() {
-    Map<String, String> map = new HashMap<>();
+  private Map<String, String> getRequestHeaders(HttpServletRequest request) {
+    Map<String, String> requestHeaders = new HashMap<>();
     Enumeration headerNames = request.getHeaderNames();
     while (headerNames.hasMoreElements()) {
       String name = (String) headerNames.nextElement();
-      map.put(name, request.getHeader(name));
+      requestHeaders.put(name, request.getHeader(name));
     }
-    return map;
+    return requestHeaders;
   }
 }
