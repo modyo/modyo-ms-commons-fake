@@ -20,7 +20,7 @@ repositories {
         dirs 'libs'
     }
 }
-
+ 
 dependencyManagement {
     imports {
         mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE")
@@ -30,6 +30,7 @@ dependencyManagement {
 dependencies {
     implementation name: 'core-1.0.0-SNAPSHOT'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile "org.springframework.boot:spring-boot-configuration-processor"
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'

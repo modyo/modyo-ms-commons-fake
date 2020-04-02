@@ -1,30 +1,28 @@
 package com.modyo.ms.commons.http.loggers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.modyo.ms.commons.core.constants.LogTypes;
 import com.modyo.ms.commons.core.loggers.Logger;
 import java.util.Date;
 import java.util.Map;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Builder
+@RequiredArgsConstructor
 @Getter
 @Setter
 public class ResponseLogger extends Logger {
 
-  @JsonProperty("type")
-  private static final String TYPE = "response";
-  private Integer status;
-  private Map<String, String> headers;
-  private Date timeStampRequest;
+  private final Integer status;
+  private final Map<String, String> headers;
+  private final Date timeStampRequest;
   private Long timeTaken;
 
   @Override
   public void setBasicLogInformation() {
-    this.setType("response");
+    this.setType(LogTypes.RESPONSE);
     super.setBasicLogInformation();
     this.timeTaken = this.getTimeStamp().getTime() - timeStampRequest.getTime();
   }
