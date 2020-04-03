@@ -1,0 +1,16 @@
+<configuration>
+  <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+      <jsonGeneratorDecorator class="net.logstash.logback.decorate.PrettyPrintingJsonGeneratorDecorator"/>
+      <jsonFactoryDecorator class="com.modyo.ms.commons.core.decorators.ISO8601DateDecorator"/>
+      <fieldNames>
+        <timestamp>timeStamp</timestamp>
+        <version>[ignore]</version>
+        <levelValue>[ignore]</levelValue>
+      </fieldNames>
+    </encoder>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="jsonConsoleAppender"/>
+  </root>
+</configuration>

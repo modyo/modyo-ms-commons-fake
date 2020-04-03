@@ -1,40 +1,40 @@
 package com.modyo.ms.commons.core.loggers;
 
-import com.modyo.ms.commons.core.dtos.Dto;
-import java.util.Date;
+import static net.logstash.logback.marker.Markers.appendFields;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextHolder;
 
-@Slf4j
 @Getter
 @Setter
-public class Logger extends Dto {
+public abstract class CommonsLogger {
 
-  private String level;
+  @JsonIgnore
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+
   private String type;
   private String correlationId;
-  private Date timeStamp;
+  private String message;
 
   public void logInfo() {
-    this.level = "info";
     setBasicLogInformation();
-    log.info(this.toJsonString());
+    logger.info(appendFields( this), message);
   }
 
   public void logError() {
-    this.level = "error";
     setBasicLogInformation();
-    log.error(this.toJsonString());
+    logger.error(appendFields(this), message);
   }
 
   public void setBasicLogInformation() {
     this.correlationId = Objects.requireNonNull(
         RequestContextHolder.currentRequestAttributes().getAttribute("correlationId", 0)
     ).toString();
-    this.timeStamp = new Date(System.currentTimeMillis());
   }
 
 }
