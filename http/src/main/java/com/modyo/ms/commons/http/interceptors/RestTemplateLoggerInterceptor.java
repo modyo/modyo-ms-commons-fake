@@ -26,22 +26,21 @@ public class RestTemplateLoggerInterceptor implements ClientHttpRequestIntercept
       HttpRequest request,
       byte[] body,
       ClientHttpRequestExecution execution) throws IOException {
-    Date tsRequest = logRequest(request, body);
+    Date tsRequest = new Date(System.currentTimeMillis());
+    logRequest(request, body);
     ClientHttpResponse response = execution.execute(request, body);
     logResponse(response, tsRequest);
     return response;
   }
 
-  private Date logRequest(HttpRequest request, byte[] body) {
-    RestTemplateRequestLogger requestLog = new RestTemplateRequestLogger(
+  private void logRequest(HttpRequest request, byte[] body) {
+   new RestTemplateRequestLogger(
         request.getMethodValue(),
         request.getURI().toString(),
         request.getHeaders(),
         new String(body, StandardCharsets.UTF_8),
         restTemplateLoggerProperties.getObfuscate().getRequest().getHeaders()
-    );
-    requestLog.logInfo();
-    return requestLog.getTimeStamp();
+    ).logInfo();
   }
 
   private void logResponse(ClientHttpResponse response, Date tsRequest) throws IOException {

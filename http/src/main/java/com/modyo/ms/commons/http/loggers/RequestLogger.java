@@ -3,7 +3,7 @@ package com.modyo.ms.commons.http.loggers;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.modyo.ms.commons.core.constants.LogTypes;
-import com.modyo.ms.commons.core.loggers.Logger;
+import com.modyo.ms.commons.core.loggers.CommonsLogger;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Slf4j
 @Getter
 @Setter
-public class RequestLogger extends Logger {
+public class RequestLogger extends CommonsLogger {
 
   @JsonIgnore
   private List<String> headersToObfuscate;

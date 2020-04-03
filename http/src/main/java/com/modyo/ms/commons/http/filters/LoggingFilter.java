@@ -34,7 +34,8 @@ public class LoggingFilter implements Filter {
       ServletResponse response,
       FilterChain chain) throws IOException, ServletException {
     if (loggingFilterProperties.isEnabled()) {
-      Date tsRequest = logRequest((HttpServletRequest) request);
+      Date tsRequest = new Date(System.currentTimeMillis());
+      logRequest((HttpServletRequest) request);
       chain.doFilter(request, response);
       logResponse((HttpServletResponse) response, tsRequest);
     } else {
@@ -42,15 +43,13 @@ public class LoggingFilter implements Filter {
     }
   }
 
-  private Date logRequest(HttpServletRequest request) {
-    RequestLogger requestLog = new RequestLogger(
+  private void logRequest(HttpServletRequest request) {
+    new RequestLogger(
         request,
         loggingFilterProperties
             .getObfuscate()
             .getRequest()
-            .getHeaders());
-    requestLog.logInfo();
-    return requestLog.getTimeStamp();
+            .getHeaders()).logInfo();
   }
 
   private void logResponse(HttpServletResponse response, Date tsRequest) {

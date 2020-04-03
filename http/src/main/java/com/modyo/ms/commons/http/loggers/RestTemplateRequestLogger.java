@@ -3,19 +3,19 @@ package com.modyo.ms.commons.http.loggers;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.modyo.ms.commons.core.constants.LogTypes;
-import com.modyo.ms.commons.core.loggers.Logger;
-import java.util.Arrays;
-import java.util.Collections;
+import com.modyo.ms.commons.core.loggers.CommonsLogger;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Slf4j
 @Getter
 @Setter
-public class RestTemplateRequestLogger extends Logger {
+public class RestTemplateRequestLogger extends CommonsLogger {
 
   @JsonIgnore
   private List<String> headersToObfuscate;

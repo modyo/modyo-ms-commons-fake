@@ -1,13 +1,11 @@
 package com.modyo.ms.commons.http.components;
 
 import com.modyo.ms.commons.http.config.RestTemplateLoggerProperties;
-import com.modyo.ms.commons.http.interceptors.AddRequestHeadersInterceptor;
 import com.modyo.ms.commons.http.interceptors.RestTemplateLoggerInterceptor;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.InterceptingClientHttpRequestFactory;
@@ -36,18 +34,14 @@ public class CustomRestTemplateBuilder {
     return this;
   }
 
-  public RestTemplate build(HttpHeaders headers) {
+  public RestTemplate build() {
     RestTemplate restTemplate = new RestTemplate();
     restTemplate.setRequestFactory(
         new InterceptingClientHttpRequestFactory(
             buildRequestFactory(),
-            buildInterceptors(headers))
+            buildInterceptors())
     );
     return restTemplate;
-  }
-
-  public RestTemplate build() {
-    return build(null);
   }
 
   private BufferingClientHttpRequestFactory buildRequestFactory() {
@@ -57,11 +51,8 @@ public class CustomRestTemplateBuilder {
     return new BufferingClientHttpRequestFactory(factory);
   }
 
-  private List<ClientHttpRequestInterceptor> buildInterceptors(HttpHeaders headers) {
+  private List<ClientHttpRequestInterceptor> buildInterceptors() {
     List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-    if (headers != null && !headers.isEmpty()) {
-      interceptors.add(new AddRequestHeadersInterceptor(headers));
-    }
     if (restTemplateLoggerProperties.isEnabled()) {
       interceptors.add(restTemplateLoggerInterceptor);
     }
