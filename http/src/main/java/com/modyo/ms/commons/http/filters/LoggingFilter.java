@@ -1,7 +1,7 @@
 package com.modyo.ms.commons.http.filters;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.modyo.ms.commons.http.config.LoggingFilterProperties;
+import com.modyo.ms.commons.http.config.properties.LoggingFilterProperties;
 import com.modyo.ms.commons.http.loggers.RequestLogger;
 import com.modyo.ms.commons.http.loggers.ResponseLogger;
 import java.io.IOException;

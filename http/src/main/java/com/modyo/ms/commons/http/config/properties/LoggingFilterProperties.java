@@ -1,4 +1,4 @@
-package com.modyo.ms.commons.http.config;
+package com.modyo.ms.commons.http.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

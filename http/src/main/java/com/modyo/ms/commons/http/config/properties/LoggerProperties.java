@@ -1,4 +1,4 @@
-package com.modyo.ms.commons.http.config;
+package com.modyo.ms.commons.http.config.properties;
 
 import java.util.Collections;
 import java.util.List;

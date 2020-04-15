@@ -1,5 +1,6 @@
 package com.modyo.ms.commons.http.filters;
 
+import com.modyo.ms.commons.http.constants.CustomHttpHeaders;
 import java.io.IOException;
 import java.util.Objects;
 import javax.servlet.Filter;
@@ -35,14 +36,9 @@ public class ResponseHeadersFilter implements Filter {
     String correlationId = Objects.requireNonNullElse(
         RequestContextHolder.currentRequestAttributes().getAttribute("correlationId", 0)
         , "").toString();
-    response.addHeader("X-Correlation-ID", correlationId);
-
-    String parentsCorrelationId = request.getHeader("X-Parents-Correlation-Ids");
-    if (parentsCorrelationId != null) {
-      response.addHeader("X-Parents-Correlation-Ids", parentsCorrelationId);
-    }
+    response.addHeader(CustomHttpHeaders.CORRELATION_ID, correlationId);
     if (applicationName != null) {
-      response.addHeader("X-Application-Name", applicationName);
+      response.addHeader(CustomHttpHeaders.APPLICATION_NAME, applicationName);
     }
   }
 }

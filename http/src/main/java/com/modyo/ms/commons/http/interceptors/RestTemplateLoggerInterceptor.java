@@ -1,6 +1,6 @@
 package com.modyo.ms.commons.http.interceptors;
 
-import com.modyo.ms.commons.http.config.RestTemplateLoggerProperties;
+import com.modyo.ms.commons.http.config.properties.RestTemplateLoggerProperties;
 import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
 import com.modyo.ms.commons.http.loggers.RestTemplateResponseLogger;
 import java.io.BufferedReader;
