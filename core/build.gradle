@@ -34,23 +34,21 @@ publishing {
 
 dependencyManagement {
     imports {
-        mavenBom('org.springframework.boot:spring-boot-dependencies:2.2.4.RELEASE')
+        mavenBom('org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE')
     }
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'javax.validation:validation-api'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
-    compile group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.1.0.RELEASE'
-    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    compile group: 'javax.xml.bind', name: 'jaxb-api'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

@@ -1,28 +1,22 @@
 package com.modyo.ms.commons.core.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modyo.ms.commons.core.dtos.RejectionDto;
 import com.modyo.ms.commons.core.exceptions.CustomValidationException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import org.springframework.security.jwt.Jwt;
-import org.springframework.security.jwt.JwtHelper;
 
 public class JwtUtils {
 
-  public static String getClaimFromAccessToken(String accessToken, String claim) {
+  public static String getClaimFromAccessToken(String encodedJwt, String claim) {
     try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      Jwt jwt = JwtHelper.decode(accessToken.split(" ")[1]);
-      Map claims = objectMapper.readValue(jwt.getClaims(), Map.class);
+      Claims claims = getClaims(encodedJwt);
       String claimValue = (String) claims.get(claim);
       if (claimValue == null) {
         throw new CustomValidationException(RejectionDto.builder()
@@ -40,10 +34,11 @@ public class JwtUtils {
     }
   }
 
-  public static Map getClaims(String accessToken) throws IOException {
-    ObjectMapper objectMapper = new ObjectMapper();
-    Jwt jwt = JwtHelper.decode(accessToken.split(" ")[1]);
-    return objectMapper.readValue(jwt.getClaims(), Map.class);
+
+  public static Claims getClaims(String encodedJwt) {
+    return Jwts.parser()
+        .setSigningKey(DatatypeConverter.parseBase64Binary(encodedJwt))
+        .parseClaimsJws(encodedJwt).getBody();
   }
 
   public static String createJWT(HashMap<String, Object> claims) {
@@ -64,5 +59,4 @@ public class JwtUtils {
     builder.setExpiration(exp);
     return builder.compact();
   }
-
 }
