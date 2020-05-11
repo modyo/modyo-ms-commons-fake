@@ -3,7 +3,8 @@ package com.modyo.ms.commons.http.config;
 import static com.google.common.base.Predicates.not;
 
 import com.modyo.ms.commons.core.constants.HandledHttpStatus;
-import com.modyo.ms.commons.http.config.properties.SwaggerApiInfoProperties;
+import com.modyo.ms.commons.http.config.properties.SwaggerProperties;
+import com.modyo.ms.commons.http.config.properties.SwaggerProperties.TagProperty;
 import com.modyo.ms.commons.http.constants.CustomHttpHeaders;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.Header;
 import springfox.documentation.service.ResponseMessage;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -32,7 +34,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @RequiredArgsConstructor
 public class SwaggerConfig {
 
-  private final SwaggerApiInfoProperties swaggerApiInfoProperties;
+  private final SwaggerProperties swaggerProperties;
 
   private static final List<String> HEADERS = List.of(
       HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
@@ -55,12 +57,15 @@ public class SwaggerConfig {
   public Docket api() {
     Docket docket = new Docket(DocumentationType.SWAGGER_2)
         .pathMapping("/")
-        .apiInfo(swaggerApiInfoProperties.getApiInfo());
+        .apiInfo(swaggerProperties.getApiInfo().getObject());
     setGlobalResponseMessages(docket);
     docket = docket.select()
         .apis(not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
         .paths(PathSelectors.any())
         .build();
+    for(TagProperty tag : swaggerProperties.getTags()) {
+      docket.tags(new Tag(tag.getName(), tag.getDescription()));
+    }
     return docket;
   }
 

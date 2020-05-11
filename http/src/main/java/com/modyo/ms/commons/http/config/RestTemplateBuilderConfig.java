@@ -2,6 +2,7 @@ package com.modyo.ms.commons.http.config;
 
 import com.modyo.ms.commons.http.config.properties.RestProperties;
 import com.modyo.ms.commons.http.config.properties.RestTemplateLoggerProperties;
+import com.modyo.ms.commons.http.config.properties.DefaultTimeoutsProperties;
 import com.modyo.ms.commons.http.interceptors.RestTemplateLoggerInterceptor;
 import java.time.Duration;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestTemplateBuilderConfig {
 
-  private final RestProperties restProperties;
+  private final DefaultTimeoutsProperties defaultTimeoutsProperties;
   private final RestTemplateLoggerProperties loggerProperties;
   private final RestTemplateLoggerInterceptor loggerInterceptor;
 
@@ -32,8 +33,8 @@ public class RestTemplateBuilderConfig {
         .requestFactory(this::buildRequestFactory)
         .interceptors(List.of(loggerInterceptor))
     : new RestTemplateBuilder()
-        .setConnectTimeout(Duration.ofMillis(restProperties.getDefaultTimeouts().getConnect()))
-        .setReadTimeout(Duration.ofMillis(restProperties.getDefaultTimeouts().getRead()));
+        .setConnectTimeout(Duration.ofMillis(defaultTimeoutsProperties.getConnect()))
+        .setReadTimeout(Duration.ofMillis(defaultTimeoutsProperties.getRead()));
   }
 
   @Bean
@@ -43,8 +44,8 @@ public class RestTemplateBuilderConfig {
 
   private BufferingClientHttpRequestFactory buildRequestFactory() {
     SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-    factory.setConnectTimeout(restProperties.getDefaultTimeouts().getConnect());
-    factory.setReadTimeout(restProperties.getDefaultTimeouts().getRead());
+    factory.setConnectTimeout(defaultTimeoutsProperties.getConnect());
+    factory.setReadTimeout(defaultTimeoutsProperties.getRead());
     return new BufferingClientHttpRequestFactory(factory);
   }
 

@@ -9,10 +9,10 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 
 @Component
-@ConfigurationProperties(prefix = "commons.http.swagger.api-info")
+@ConfigurationProperties(prefix = "commons.http.swagger.tags")
 @Getter
 @Setter
-public class SwaggerApiInfoProperties {
+public class SwaggerTagsProperties {
 
   private String title = "";
   private String description = "";
