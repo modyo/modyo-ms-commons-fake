@@ -18,16 +18,6 @@ import org.springframework.http.HttpMethod;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CorsProperties {
 
-  private static final String ALLOW_ORIGIN = "*";
-
-  private static final List<String>  DEFAULT_ALLOW_METHODS = List.of(
-      HttpMethod.GET.name(),
-      HttpMethod.POST.name(),
-      HttpMethod.PUT.name(),
-      HttpMethod.PATCH.name(),
-      HttpMethod.DELETE.name(),
-      HttpMethod.OPTIONS.name());
-
   private List<String> allowOrigins = List.of("*");
 
   private List<String> exposeHeaders = List.of(

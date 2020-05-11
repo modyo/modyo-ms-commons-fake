@@ -8,7 +8,7 @@ import static com.modyo.ms.commons.awsapigw.constants.AwsExtensionsPrefixes.M_RE
 import static springfox.documentation.swagger.common.HostNameProvider.componentsFrom;
 
 import com.google.common.base.Strings;
-import com.modyo.ms.commons.awsapigw.config.properties.SwaggerProperties;
+import com.modyo.ms.commons.awsapigw.config.properties.ApiGwSwaggerProperties;
 import com.modyo.ms.commons.awsapigw.config.properties.SecurityDefinitionProperties;
 import com.modyo.ms.commons.core.constants.HandledHttpStatus;
 import com.modyo.ms.commons.http.constants.CustomHttpHeaders;
@@ -41,7 +41,7 @@ public class SwaggerCustomizer {
   private String serverPort;
 
   private final String hostNameOverride;
-  private final SwaggerProperties swaggerProperties;
+  private final ApiGwSwaggerProperties swaggerProperties;
   private final OptionsMockOperationBuilder optionsMockOperationBuilder;
   private final ServiceModelToSwagger2Mapper mapper;
   private final DocumentationCache documentationCache;
@@ -59,7 +59,7 @@ public class SwaggerCustomizer {
   @Autowired
   public SwaggerCustomizer(
       Environment environment,
-      SwaggerProperties swaggerProperties,
+      ApiGwSwaggerProperties swaggerProperties,
       OptionsMockOperationBuilder optionsMockOperationBuilder,
       ServiceModelToSwagger2Mapper mapper,
       DocumentationCache documentationCache) {
@@ -77,6 +77,7 @@ public class SwaggerCustomizer {
     Documentation documentation = documentationCache.documentationByGroup("default");
     swagger = mapper.mapDocumentation(documentation);
     setSwaggerHostAndBasePath(request);
+    swagger.getInfo().setTitle(swaggerProperties.getApigatewayName());
     setSwaggerBinaryMediaTypes();
     swagger.getPaths().forEach(this::addVendorExtensions);
     swagger.getPaths().forEach((pathString, pathObject) -> pathObject

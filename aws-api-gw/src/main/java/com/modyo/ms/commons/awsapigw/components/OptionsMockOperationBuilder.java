@@ -2,7 +2,7 @@ package com.modyo.ms.commons.awsapigw.components;
 
 import static com.modyo.ms.commons.awsapigw.constants.AwsExtensionsPrefixes.M_RESP_H_PREFIX;
 
-import com.modyo.ms.commons.awsapigw.config.properties.SwaggerProperties;
+import com.modyo.ms.commons.awsapigw.config.properties.ApiGwSwaggerProperties;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Response;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Component
 public class OptionsMockOperationBuilder {
 
-  private final SwaggerProperties swaggerProperties;
+  private final ApiGwSwaggerProperties swaggerProperties;
 
   public Operation buildOptionsOperation(Path path) {
     Operation operation = new Operation();

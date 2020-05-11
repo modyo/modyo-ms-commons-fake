@@ -14,8 +14,9 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @Validated
-public class SwaggerProperties {
+public class ApiGwSwaggerProperties {
 
+  private String apigatewayName;
   private List<String> xAmazonApigatewayBinaryMediaTypes = new ArrayList<>();
   @NotNull private IntegrationProperties xAmazonApigatewayIntegration;
   private List<SecurityDefinitionProperties> securityDefinitions = new ArrayList<>();
