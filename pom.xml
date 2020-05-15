@@ -9,6 +9,7 @@
     <version>2.1.3.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
   <groupId>com.modyo.services</groupId>
   <artifactId>modyo-ms-commons</artifactId>
   <version>0.0.14</version>
