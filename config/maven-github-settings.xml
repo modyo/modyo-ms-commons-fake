@@ -12,7 +12,7 @@
         <repository>
           <id>github</id>
           <name>GitHub Modyo Apache Maven Packages</name>
-          <url>https://maven.pkg.github.com/modyo</url>
+          <url>https://maven.pkg.github.com/modyo/maven-packages</url>
         </repository>
       </repositories>
     </profile>
