@@ -1,9 +1,7 @@
 name: Release (master)
-on: push
-  branches:
-    - master
-  tags-ignore:
-    - '*.*'
+on:
+  release:
+    types: [published]
 jobs:
   build:
     runs-on: ubuntu-latest
