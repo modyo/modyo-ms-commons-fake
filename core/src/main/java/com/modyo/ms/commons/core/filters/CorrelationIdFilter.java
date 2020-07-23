@@ -22,4 +22,5 @@ public class CorrelationIdFilter implements Filter {
     RequestContextHolder.currentRequestAttributes().setAttribute("correlationId", correlationId, 0);
     chain.doFilter(request, response);
   }
+
 }

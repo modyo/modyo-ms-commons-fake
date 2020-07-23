@@ -80,6 +80,7 @@ public class RutUtils {
 
   private void validate() {
     Pattern pattern = Pattern.compile("^[1-9][0-9]{5,7}[0-9kK]{1}$");
+
     if (!pattern.matcher(unformatted()).matches() || numeroInt == 0 || !dv
         .equals(calcDigitoVerificador())) {
       throwValidationException();
