@@ -1,0 +1,106 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'maven-publish'
+    id 'jacoco'
+}
+
+group 'com.modyo.ms.commons'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'jacoco'
+
+compileJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+publishing {
+    publications {
+        testing(MavenPublication) {
+            groupId 'com.modyo.ms.commons'
+            artifactId 'core'
+            version '1.0.0-SNAPSHOT'
+            from components.java
+        }
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom('org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE')
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.security:spring-security-jwt:1.0.10.RELEASE'
+    implementation 'com.fasterxml.jackson.core:jackson-core'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'javax.validation:validation-api'
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'junit:junit:4.12'
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+def jacocoExclude = ['**/dtos/**', '**/exceptions/**', '**/constants/**', '**/loggers/**']
+
+jacocoTestReport {
+    afterEvaluate {
+        getClassDirectories().setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExclude)
+        })
+    }
+}
+
+jacocoTestCoverageVerification {
+
+    afterEvaluate {
+        getClassDirectories().setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExclude)
+        })
+    }
+    violationRules {
+
+        rule {
+            element = 'BUNDLE'
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.90
+            }
+            excludes = [
+                    'com/modyo/ms/commons/core/dtos/*'
+            ]
+        }
+    }
+
+}
+
+test.finalizedBy jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification

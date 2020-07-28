@@ -1,41 +1,26 @@
-/target/
-!.mvn/wrapper/maven-wrapper.jar
+# Gradle
+.gradle
+/build/
+core/build/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Ignore Gradle GUI config
+gradle-app.setting
 
-### IntelliJ IDEA ###
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+
+# Ignore IntelliJ IDEA configuration files
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-/build/
-
-### Eclipse ###
-.classpath
-.project
-.settings/
-
-### VS Code ###
-.vscode/
-
-### Maven ###
-.mvn/
-log/
-/target/
-
-### OS X ###
+# OS X files
 .DS_Store
+
+# Java build
+target/
