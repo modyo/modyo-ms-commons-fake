@@ -25,21 +25,19 @@ public class JwtUtils {
       Map<String,Object> claims = getClaims(accessToken);
       String claimValue = (String)claims.get(claim);
       if (claimValue == null) {
-        throw new CustomValidationException(RejectionDto.builder().source(claim).detail("claim " + claim + "no se encuentra dentro de header Authorization").build());
+        throw new CustomValidationException(
+            new RejectionDto(claim, "claim " + claim + "no se encuentra dentro de header Authorization"));
       } else {
         return claimValue;
       }
-    } catch (Exception var6) {
-      throw new CustomValidationException(RejectionDto.builder().source("Authorization header").detail(var6.getMessage()).build(), var6);
+    } catch (Exception e) {
+      throw new CustomValidationException(new RejectionDto("Authorization header", e.getMessage()));
     }
   }
 
   public static Map<String, Object> getClaims(String accessToken) throws IOException {
     if (accessToken == null || !accessToken.contains("Bearer ")) {
-      throw new CustomValidationException(RejectionDto.builder()
-          .detail("not valid")
-          .source("Authorization header")
-          .build());
+      throw new CustomValidationException(new RejectionDto("Authorization header", "not valid"));
     }
     ObjectMapper objectMapper = new ObjectMapper();
     Jwt jwt = JwtHelper.decode(accessToken.split(" ")[1]);
@@ -52,7 +50,12 @@ public class JwtUtils {
     Date now = new Date(nowMillis);
     byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("whatever");
     Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-    JwtBuilder builder = Jwts.builder().setId("whateverId").setIssuedAt(now).setSubject("whateverSubject").setIssuer("whateverIssuer").setClaims(claims).signWith(signatureAlgorithm, signingKey);
+    JwtBuilder builder = Jwts.builder()
+        .setId("whateverId")
+        .setIssuedAt(now).setSubject("whateverSubject")
+        .setIssuer("whateverIssuer")
+        .setClaims(claims)
+        .signWith(signatureAlgorithm, signingKey);
     long expMillis = nowMillis + 18000L;
     Date exp = new Date(expMillis);
     builder.setExpiration(exp);
