@@ -9,7 +9,6 @@ import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import com.modyo.ms.commons.core.exceptions.ForbiddenException;
 import com.modyo.ms.commons.core.exceptions.TechnicalErrorException;
 import com.modyo.ms.commons.core.loggers.ErrorLogger;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolationException;
@@ -72,20 +71,15 @@ public class ExceptionManager {
   @ExceptionHandler(ConstraintViolationException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ConstraintViolationException e) {
-    List<RejectionDto> rejections = e.getConstraintViolations().stream().map(violation ->
-        RejectionDto.builder()
-            .source(violation.getPropertyPath().toString())
-            .detail(violation.getMessage()).build())
+    List<RejectionDto> rejections = e.getConstraintViolations().stream()
+        .map(violation -> new RejectionDto(violation.getPropertyPath().toString(), violation.getMessage()))
         .collect(Collectors.toList());
     return logAndGetResponseEntity(rejections, e);
   }
 
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   public ResponseEntity<ErrorsResponseDto> handleException(MethodArgumentTypeMismatchException e) {
-    List<RejectionDto> rejections = Collections.singletonList(RejectionDto.builder()
-        .source(e.getName())
-        .detail(e.getMessage())
-        .build());
+    List<RejectionDto> rejections = List.of(new RejectionDto(e.getName(), e.getMessage()));
     return logAndGetResponseEntity(rejections, e);
   }
 
@@ -95,11 +89,8 @@ public class ExceptionManager {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(MethodArgumentNotValidException e) {
-    List<RejectionDto> rejections = e.getBindingResult().getFieldErrors().stream().map(fieldError ->
-        RejectionDto.builder()
-            .source(fieldError.getField())
-            .detail(fieldError.getDefaultMessage())
-            .build())
+    List<RejectionDto> rejections = e.getBindingResult().getFieldErrors().stream()
+        .map(fieldError -> new RejectionDto(fieldError.getField(), fieldError.getDefaultMessage()))
         .collect(Collectors.toList());
     return logAndGetResponseEntity(rejections, e);
   }

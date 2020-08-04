@@ -14,7 +14,7 @@ public class Dto implements Serializable {
   public String toJsonString() {
     ObjectMapper mapper = new ObjectMapper();
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
+    mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(false));
     String jsonString;
     try {
       jsonString = mapper.writeValueAsString(this);

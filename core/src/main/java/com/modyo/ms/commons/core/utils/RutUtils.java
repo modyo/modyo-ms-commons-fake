@@ -98,20 +98,17 @@ public class RutUtils {
   }
 
   private String formatted(boolean withPoints) {
-    return (withPoints ?
-        new DecimalFormat("###,###.###", new DecimalFormatSymbols(new Locale("es", "CL")))
-            .format(numeroInt)
-        : numeroString) +
-        "-" + dv;
+    return (withPoints
+        ? new DecimalFormat(
+            "###,###.###",
+            new DecimalFormatSymbols(new Locale("es", "CL")))
+        .format(numeroInt)
+        : numeroString) + "-" + dv;
   }
 
   private void throwValidationException() {
     throw new CustomValidationException(
-        RejectionDto.builder()
-            .source("rut")
-            .detail("rut inválido")
-            .build()
-    );
+        new RejectionDto("rut", "rut inválido"));
   }
 
 }

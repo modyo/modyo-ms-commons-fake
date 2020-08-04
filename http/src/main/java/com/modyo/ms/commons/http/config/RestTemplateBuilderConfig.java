@@ -1,8 +1,7 @@
 package com.modyo.ms.commons.http.config;
 
-import com.modyo.ms.commons.http.config.properties.RestProperties;
-import com.modyo.ms.commons.http.config.properties.RestTemplateLoggerProperties;
 import com.modyo.ms.commons.http.config.properties.DefaultTimeoutsProperties;
+import com.modyo.ms.commons.http.config.properties.RestTemplateLoggerProperties;
 import com.modyo.ms.commons.http.interceptors.RestTemplateLoggerInterceptor;
 import java.time.Duration;
 import java.util.List;
