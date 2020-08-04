@@ -16,7 +16,6 @@ import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.SecuritySchemeDefinition;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +79,10 @@ public class SwaggerCustomizer {
     swagger.getInfo().setTitle(swaggerProperties.getApigatewayName());
     setSwaggerBinaryMediaTypes();
     swagger.getPaths().forEach(this::addVendorExtensions);
-    swagger.getPaths().forEach((pathString, pathObject) -> pathObject
-        .setOptions(optionsMockOperationBuilder.buildOptionsOperation(pathObject)));
+    if (swaggerProperties.getXAmazonApigatewayCors().getEnableMockOptionMethods()) {
+      swagger.getPaths().forEach((pathString, pathObject) -> pathObject
+          .setOptions(optionsMockOperationBuilder.buildOptionsOperation(pathObject)));
+    }
     setSwaggerApiGwCors();
     swagger.setSecurityDefinitions(getSecurityDefinitions());
     return swagger;
@@ -107,9 +108,11 @@ public class SwaggerCustomizer {
   }
 
   private void setSwaggerApiGwCors() {
-    swagger.setVendorExtension(
-        "x-amazon-apigateway-cors",
-        swaggerProperties.getXAmazonApigatewayCors());
+    if (swaggerProperties.getXAmazonApigatewayCors().getEnableGeneralConfiguration()) {
+      swagger.setVendorExtension(
+          "x-amazon-apigateway-cors",
+          swaggerProperties.getXAmazonApigatewayCors());
+    }
   }
 
   private String hostName(UriComponents uriComponents) {
@@ -130,20 +133,8 @@ public class SwaggerCustomizer {
       vendorExtensions.put(
           "x-amazon-apigateway-integration",
           buildAwsIntegrationExtension(method.name(), operation, pathString));
-
-      List<Object> securityDefinitions = getSecurityDefinitions(operation.getOperationId());
-      if (!securityDefinitions.isEmpty()) {
-        vendorExtensions.put("security", securityDefinitions);
-      }
       operation.setVendorExtensions(vendorExtensions);
     });
-  }
-
-  private List<Object> getSecurityDefinitions(String operationId) {
-    return swaggerProperties.getSecurityDefinitions().stream()
-        .filter(definition -> definition.getOperations().contains(operationId))
-        .map(definition -> Map.of(definition.getDefinitionName(), Collections.emptyList()))
-        .collect(Collectors.toList());
   }
 
   private Map<String, Object> buildAwsIntegrationExtension(
@@ -183,7 +174,7 @@ public class SwaggerCustomizer {
   }
 
   private String getParamType(String in) {
-    return in.equals("query") ? "queryString" : in;
+    return in.equals("query") ? "querystring" : in;
   }
 
   private Map<String, Object> getResponseParameters() {

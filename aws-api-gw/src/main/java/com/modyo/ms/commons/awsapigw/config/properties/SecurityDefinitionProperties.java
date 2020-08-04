@@ -2,8 +2,6 @@ package com.modyo.ms.commons.awsapigw.config.properties;
 
 import io.swagger.models.auth.ApiKeyAuthDefinition;
 import io.swagger.models.auth.In;
-import java.util.List;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.Getter;
@@ -27,10 +25,6 @@ public class SecurityDefinitionProperties {
   @NotNull private String in;
   @NotNull private String xAmazonApigatewayAuthtype;
   @NotNull private ApiGatewayAuthorizerProperties xAmazonApigatewayAuthorizer;
-
-  @NotNull
-  @NotEmpty
-  private List<String> operations;
 
   public ApiKeyAuthDefinition getApiKeyAuthDefinition() {
     ApiKeyAuthDefinition authDefinition = new ApiKeyAuthDefinition();

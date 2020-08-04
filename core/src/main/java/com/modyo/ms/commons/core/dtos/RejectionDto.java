@@ -1,9 +1,9 @@
 package com.modyo.ms.commons.core.dtos;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Builder
+@RequiredArgsConstructor
 @Getter
 public class RejectionDto extends Dto {
 

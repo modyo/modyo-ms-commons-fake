@@ -18,6 +18,12 @@ import org.springframework.http.HttpMethod;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CorsProperties {
 
+  @JsonIgnore
+  private Boolean enableGeneralConfiguration = false;
+
+  @JsonIgnore
+  private Boolean enableMockOptionMethods = false;
+
   private List<String> allowOrigins = List.of("*");
 
   private List<String> exposeHeaders = List.of(
@@ -51,23 +57,23 @@ public class CorsProperties {
   @JsonIgnore
   public Map<String, Object> getCorsResponseParameters() {
     Map<String, Object> responseParameters =  new HashMap<>();
-    responseParameters.put(
-        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
-        "'" + String.join(",", getAllowOrigins()) + "'");
-    responseParameters.put(
-        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
-        "'" + String.join(",", getAllowMethods()) + "'");
-    responseParameters.put(
-        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_MAX_AGE,
-        "'" + getMaxAge() + "'");
+//    responseParameters.put(
+//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
+//        "'" + String.join(",", getAllowOrigins()) + "'");
+//    responseParameters.put(
+//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
+//        "'" + String.join(",", getAllowMethods()) + "'");
+//    responseParameters.put(
+//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_MAX_AGE,
+//        "'" + getMaxAge() + "'");
     responseParameters.put(
         M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
         "'" + String.join(",", getExposeHeaders()) + "'");
-    if (allowCredentials != null && allowCredentials) {
-      responseParameters.put(
-          M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
-          "'" + getAllowCredentials() + "'");
-    }
+//    if (allowCredentials != null && allowCredentials) {
+//      responseParameters.put(
+//          M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
+//          "'" + getAllowCredentials() + "'");
+//    }
     return responseParameters;
   }
 

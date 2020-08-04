@@ -10,9 +10,8 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 @Validated
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiGatewayAuthorizerProperties {
-
-  @JsonInclude(JsonInclude.Include.NON_NULL)
 
   @NotNull private String type;
   @NotNull private String authorizerUri;
