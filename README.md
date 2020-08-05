@@ -2,7 +2,7 @@
 
 This is a proprietary artifact made by Modyo.
 
-Consist in a group of reusable functionalities that the microservices made by Spring Boot need for different purposes, such as:
+Consist in a group of reusable functionalities that the Spring Boot microservices made by the company need for different purposes, such as:
 
 - Utils
 - Error Handling
@@ -20,7 +20,7 @@ The functionalities are decoupled in three Spring Boot dependencies:
 
 ### Set Up
 - AdoptOpenJDK11 installed
-- Githun personal access token environment variables:
+- Github personal access token environment variables:
     - `GITHUB_USERNAME`: Github username
     - `GITHUB_TOKEN`: Github access token with at least `read:packages` scope and Modyo SSO enabled.
     
@@ -64,7 +64,7 @@ dependencies {
 ```
 Add some or all of these dependencies according to your needs.
 
-Finally, in your Main Application class, add the following annotation:
+Finally, in your main application class, add the following annotation:
 
 ```java
 @ComponentScan({
@@ -83,17 +83,17 @@ If you want to modify anyone of the package in this project, follow the next ste
 
 - Clone the `master` branch. 
 - Create new branch with this format: `<feature/fix>/<Jira task code>-short-description`.
-Example: `feature/SERVICES-123-new-awesome-feature`.
+(Example: `feature/SERVICES-123-new-awesome-feature`).
 - Go to the folder according to the package you want to modify and open it with your IDE.
 - Write your code...
-- Change the version in the `build.gradle` folder according to the level of the changes.
-    - Minor for new features.
-    - Patch for modifications in features created previously.
+- Level up the version in the `build.gradle` folder according to the level of the changes.
+    - Minor: for new features.
+    - Patch: for modifications in features created previously.
 - Test the code typing in your terminal: `./gradlew build`.
 - Install the package in your local maven repository typing:
 `./gradlew publishSnapshotPublicationToMavenLocal`.
 - Use another Spring Boot microservice project to test if the package installation occurs correctly.
-To do this, add Maven local repository in the `build.gradle` microservice project file:
+To do this, add the maven local repository in the `build.gradle` microservice project file:
 ```groovy
 repositories  {
     // ... another repositories
@@ -108,7 +108,7 @@ dependencies {
     implementation 'com.modyo.ms.commons:<dependency-to-test>:2.x.y-SNAPSHOT'
 }
 ```
-Finally, add the annotation explained in the *Installation* section.
+Finally, add the annotation described in the *Installation* section in your main application class.
 - When everything works fine, go back to the dependency code and create a pull request that points to `master` branch.
 - If the pull request is approved, merge it and create a new release with a new version tag (example: `v2.x.y`) and `master` branch.
 - In your computer, checkout to `master` branch and update it.
