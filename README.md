@@ -2,7 +2,7 @@
 
 This is a proprietary artifact made by Modyo.
 
-Consist in a group of reusable functionalities that the Spring Boot microservices made by the company need for different purposes, such as:
+It consists of a group of reusable functionalities which the Spring Boot microservices made by the company need for different purposes, such as:
 
 - Utils
 - Error Handling
@@ -22,17 +22,17 @@ The functionalities are decoupled in three Spring Boot dependencies:
 - AdoptOpenJDK11 installed
 - Github personal access token environment variables:
     - `GITHUB_USERNAME`: Github username
-    - `GITHUB_TOKEN`: Github access token with at least `read:packages` scope and Modyo SSO enabled.
+    - `GITHUB_TOKEN`: Github access token with at least the scope `read:packages` and Modyo SSO enabled.
     
-If you don't have these credentials, follow the next step instructions, otherwise go to *Installation* Section.
+If you don't have these credentials, follow the next step instruction, otherwise go to *Installation* Section.
 
 ### Get Github personal access token
 - Follow the instruction of this
   [link](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
 - Save the value of the token since it will not be possible to rescue it later.
 - Don't forget to include the scope `read:packages`.
-- Once created, go to the list of tokens click on *Enable SSO* and then on *Authorize*.
-- Declare the above environment variables.
+- Once created, go to the list of tokens, click on *Enable SSO* and then on *Authorize*.
+- Declare the above environment variables .
 
 ### Installation
 
@@ -79,7 +79,7 @@ public class Application {
 
 ## Contributions
 
-If you want to modify anyone of the dependencies in this project, follow the next steps:
+If you want to modify any of the dependencies in this project, follow the next steps:
 
 - Clone the `master` branch. 
 - Create new branch with this format: `<feature/fix>/<Jira task code>-short-description`.
