@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.modyo.ms.commons'
-version '1.0.0-SNAPSHOT'
+version '2.0.0'
 
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
@@ -19,15 +19,39 @@ compileJava {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = 'GitHubPackages'
+        url = 'https://maven.pkg.github.com/modyo/maven-packages'
+        credentials {
+            username = System.getenv("GITHUB_USERNAME")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 publishing {
     publications {
-        testing(MavenPublication) {
-            groupId 'com.modyo.ms.commons'
+        snapshot(MavenPublication) {
             artifactId 'aws-api-gw'
-            version '1.0.0-SNAPSHOT'
+            version project.version + '-SNAPSHOT'
             from components.java
+        }
+    }
+    publications {
+        release(MavenPublication) {
+            artifactId 'aws-api-gw'
+            version project.version + '-RELEASE'
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = 'https://maven.pkg.github.com/modyo/modyo-ms-commons'
+            credentials {
+                username System.getenv("GITHUB_USERNAME")
+                password System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
@@ -39,8 +63,8 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'com.modyo.ms.commons:core:1.0.0-SNAPSHOT'
-    implementation 'com.modyo.ms.commons:http:1.0.0-SNAPSHOT'
+    implementation 'com.modyo.ms.commons:core:2.0.0-RELEASE'
+    implementation 'com.modyo.ms.commons:http:2.0.0-RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'

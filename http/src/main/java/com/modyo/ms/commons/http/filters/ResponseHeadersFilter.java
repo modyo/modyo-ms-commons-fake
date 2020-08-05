@@ -34,8 +34,7 @@ public class ResponseHeadersFilter implements Filter {
 
   private void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
     String correlationId = Objects.requireNonNullElse(
-        RequestContextHolder.currentRequestAttributes().getAttribute("correlationId", 0)
-        , "").toString();
+        RequestContextHolder.currentRequestAttributes().getAttribute("correlationId", 0), "").toString();
     response.addHeader(CustomHttpHeaders.CORRELATION_ID, correlationId);
     if (applicationName != null) {
       response.addHeader(CustomHttpHeaders.APPLICATION_NAME, applicationName);

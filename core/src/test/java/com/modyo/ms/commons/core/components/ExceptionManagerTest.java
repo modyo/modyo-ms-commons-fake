@@ -104,7 +104,7 @@ public class ExceptionManagerTest {
   public void givenCustomValidationException_ThenReturn422_1001() {
     ResponseEntity<ErrorsResponseDto> responseEntity = managerUnderTest.handleException(
         new CustomValidationException(Collections.singletonList(
-            RejectionDto.builder().source("source").detail("detail").build()
+            new RejectionDto("source", "detail")
         )));
 
     assertThat(responseEntity.getStatusCode(), is(HttpStatus.UNPROCESSABLE_ENTITY));
