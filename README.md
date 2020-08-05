@@ -79,7 +79,7 @@ public class Application {
 
 ## Contributions
 
-If you want to modify anyone of the package in this project, follow the next steps:
+If you want to modify anyone of the dependencies in this project, follow the next steps:
 
 - Clone the `master` branch. 
 - Create new branch with this format: `<feature/fix>/<Jira task code>-short-description`.
