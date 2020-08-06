@@ -70,7 +70,7 @@ Finally, in your main application class, add the following annotation:
 @ComponentScan({
     "com.modyo.ms.commons",
     // current application base package
-    // ... base package of anther Spring Boot dependencies
+    // ... base package of another Spring Boot dependencies
 })
 public class Application {
     // ....
