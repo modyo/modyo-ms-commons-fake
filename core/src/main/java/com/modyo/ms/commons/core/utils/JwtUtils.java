@@ -25,13 +25,12 @@ public class JwtUtils {
       Map<String,Object> claims = getClaims(accessToken);
       String claimValue = (String)claims.get(claim);
       if (claimValue == null) {
-        throw new CustomValidationException(
-            new RejectionDto(claim, "claim " + claim + "no se encuentra dentro de header Authorization"));
+        throw new CustomValidationException(new RejectionDto(claim, "claim " + claim + "no se encuentra dentro de header Authorization"));
       } else {
         return claimValue;
       }
-    } catch (Exception e) {
-      throw new CustomValidationException(new RejectionDto("Authorization header", e.getMessage()));
+    } catch (Exception var6) {
+      throw new CustomValidationException(new RejectionDto(claim, "claim " + claim + "no se encuentra dentro de header Authorization"));
     }
   }
 
@@ -50,12 +49,7 @@ public class JwtUtils {
     Date now = new Date(nowMillis);
     byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("whatever");
     Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-    JwtBuilder builder = Jwts.builder()
-        .setId("whateverId")
-        .setIssuedAt(now).setSubject("whateverSubject")
-        .setIssuer("whateverIssuer")
-        .setClaims(claims)
-        .signWith(signatureAlgorithm, signingKey);
+    JwtBuilder builder = Jwts.builder().setId("whateverId").setIssuedAt(now).setSubject("whateverSubject").setIssuer("whateverIssuer").setClaims(claims).signWith(signatureAlgorithm, signingKey);
     long expMillis = nowMillis + 18000L;
     Date exp = new Date(expMillis);
     builder.setExpiration(exp);

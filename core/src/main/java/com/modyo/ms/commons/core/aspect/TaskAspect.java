@@ -1,7 +1,7 @@
-package com.modyo.services.aspect;
+package com.modyo.ms.commons.core.aspect;
 
-import com.modyo.services.configuration.InMemoryRequestAttributes;
-import com.modyo.services.loggers.TaskLogger;
+import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
+import com.modyo.ms.commons.core.loggers.TaskLogger;
 import java.util.UUID;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -27,6 +27,7 @@ public class TaskAspect {
       TaskLogger.error(taskName, e.getMessage()).logError();
       return null;
     }
+
   }
 
   private void generateCorrelationId() {
