@@ -2,6 +2,7 @@ package com.modyo.ms.commons.http.validators;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -16,12 +17,14 @@ public class DateValidator implements ConstraintValidator<DatePattern, String> {
 
   @Override
   public boolean isValid(String date, ConstraintValidatorContext context) {
-    SimpleDateFormat df = new SimpleDateFormat(pattern);
-    df.setLenient(false);
-    try {
-      df.parse(date);
-    } catch (ParseException e) {
-      return false;
+    if (Optional.ofNullable(date).isPresent()) {
+      SimpleDateFormat df = new SimpleDateFormat(pattern);
+      df.setLenient(false);
+      try {
+        df.parse(date);
+      } catch (ParseException e) {
+        return false;
+      }
     }
     return true;
   }
