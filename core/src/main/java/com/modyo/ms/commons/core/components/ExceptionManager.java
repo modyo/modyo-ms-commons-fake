@@ -7,6 +7,7 @@ import com.modyo.ms.commons.core.dtos.RejectionDto;
 import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
 import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import com.modyo.ms.commons.core.exceptions.ForbiddenException;
+import com.modyo.ms.commons.core.exceptions.NotFoundException;
 import com.modyo.ms.commons.core.exceptions.TechnicalErrorException;
 import com.modyo.ms.commons.core.loggers.ErrorLogger;
 import java.util.List;
@@ -33,40 +34,45 @@ import org.springframework.web.client.UnknownHttpStatusCodeException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
- * Clase que engloba la configuración de mapeo de Excepciones a respuestas HTTP
+ * Used for intercept thrown exceptions and return standard error responses
  */
 @ControllerAdvice
 public class ExceptionManager {
 
   /**
-   * Excepciones no manejadas
+   * Unhandled errors
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorsResponseDto> handleException(Exception e) {
-    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNO, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.INTERNAL, e);
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  public ResponseEntity<ErrorsResponseDto> handleException(NotFoundException e) {
+    return logAndGetResponseEntity(HttpStatus.NOT_FOUND, ErrorCodes.RESOURCE_NOT_FOUND, e);
   }
 
   /**
-   * Excepciones encontradas como parte de la lógica de negocio
+   * When the business logic throws a business exception
    */
   @ExceptionHandler(BusinessErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(BusinessErrorException e) {
-    return logAndGetResponseEntity(HttpStatus.OK, ErrorCodes.NEGOCIO, e);
+    return logAndGetResponseEntity(HttpStatus.OK, ErrorCodes.BUSINESS_ERROR, e);
   }
 
   /**
-   * Excepciones por parámetros requeridos faltantes de tipo query
+   * When request not includes required query params
    */
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(
       MissingServletRequestParameterException e) {
-    return logAndGetResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ErrorCodes.PARAMETRO_FALTANTE, e);
+    return logAndGetResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ErrorCodes.MISSING_PARAM, e);
   }
 
   /**
-   * Excepciones de Bean Validation sobre parámetros de tipo path y query
+   * When bean validation is thrown due to invalid path or query params
    */
   @ExceptionHandler(ConstraintViolationException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -84,7 +90,7 @@ public class ExceptionManager {
   }
 
   /**
-   * Excepciones de Bean Validation sobre parámetros de un DTO
+   * When bean validation is thrown due to invalid body params
    */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -96,7 +102,7 @@ public class ExceptionManager {
   }
 
   /**
-   * Excepciones de validación de parámetros que no usan Bean Validation
+   * When a custom validation is thrown due to invalid params
    */
   @ExceptionHandler(CustomValidationException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -105,106 +111,106 @@ public class ExceptionManager {
   }
 
   /**
-   * Excepciones de validacion de presencia de headers en una request
+   * When request not includes required header
    */
   @ExceptionHandler(MissingRequestHeaderException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(MissingRequestHeaderException e) {
-    return logAndGetResponseEntity(HttpStatus.BAD_REQUEST, ErrorCodes.HEADER_FALTANTE, e);
+    return logAndGetResponseEntity(HttpStatus.BAD_REQUEST, ErrorCodes.MISSING_REQUEST_HEADER, e);
   }
 
   /**
-   * Excepciones por llamadas a métodos no soportados por la API
+   * When request method is not supported
    */
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(
       HttpRequestMethodNotSupportedException e) {
-    return logAndGetResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ErrorCodes.METODO_NO_SOPORTADO, e);
+    return logAndGetResponseEntity(HttpStatus.METHOD_NOT_ALLOWED, ErrorCodes.METHOD_NOT_ALLOWED, e);
   }
 
   /**
-   * Excepciones por llamadas a métodos con content-type no soportado
+   * When request content type is not supported
    */
   @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMediaTypeNotSupportedException e) {
-    return logAndGetResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO, e);
+    return logAndGetResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.UNSUPPORTED_MEDIA_TYPE, e);
   }
 
   /**
-   * Excepciones por llamadas a métodos con content-type no aceptado
+   * When request content type is not acceptable
    */
   @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMediaTypeNotAcceptableException e) {
-    return logAndGetResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.FORMATO_NO_SOPORTADO, e);
+    return logAndGetResponseEntity(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ErrorCodes.UNSUPPORTED_MEDIA_TYPE, e);
   }
 
   /**
-   * Excepciones por llamadas a métodos con un json mal formado
+   * When request content is malformed
    */
   @ExceptionHandler(HttpMessageNotReadableException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpMessageNotReadableException e) {
-    return logAndGetResponseEntity(HttpStatus.BAD_REQUEST, ErrorCodes.OBJETO_MAL_FORMADO, e);
+    return logAndGetResponseEntity(HttpStatus.BAD_REQUEST, ErrorCodes.MALFORMED_REQUEST, e);
   }
 
   /**
-   * Excepciones por respuestas no exitosas de servicios externos a causa de un problemas propios de los servicios
+   * When an external service response http status is a 5xx
    */
   @ExceptionHandler(HttpServerErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpServerErrorException e) {
-    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.SERVICIO_EXTERNO, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.EXTERNAL_SERVICE, e);
   }
 
   /**
-   * Excepciones por respuestas no exitosas de un servicio externo a causa de consultas mal formadas
+   * When an external service response http status is a 4xx
    */
   @ExceptionHandler(HttpClientErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(HttpClientErrorException e) {
     return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
-        ErrorCodes.CONSULTA_SERVICIO_MAL_FORMADA, e);
+        ErrorCodes.MALFORMED_EXTERNAL_SERVICE_REQUEST, e);
   }
 
   /**
-   * Excepciones por respuestas no exitosas de servicios externos con código de error desconocido
+   * When an external service response http status is unknown
    */
   @ExceptionHandler(UnknownHttpStatusCodeException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(UnknownHttpStatusCodeException e) {
     return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
-        ErrorCodes.SERVICIO_EXTERNO_DESCONOCIDO, e);
+        ErrorCodes.UNKNOWN_EXTERNAL_SERVICE_ERROR, e);
   }
 
   /**
-   * Excepciones por consultas no exitosas a servicios externos
+   * When request to an external service fail
    */
   @ExceptionHandler(ResourceAccessException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ResourceAccessException e) {
     return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR,
-        ErrorCodes.CONSULTA_SERVICIO_EXTERNO, e);
+        ErrorCodes.EXTERNAL_SERVICE_REQUEST_ERROR, e);
   }
 
   /**
-   * Excepciones por consultas rechazadas
+   * When request is rejected due to missing or invalid permissions
    */
   @ExceptionHandler(ForbiddenException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(ForbiddenException e) {
-    return logAndGetResponseEntity(HttpStatus.FORBIDDEN, ErrorCodes.ACCESO_PROHIBIDO, e);
+    return logAndGetResponseEntity(HttpStatus.FORBIDDEN, ErrorCodes.ACCESS_FORBIDDEN, e);
   }
 
   /**
-   * Excepciones durante algún procesamiento de datos
+   * When a handled technical error exception is thrown
    */
   @ExceptionHandler(TechnicalErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(TechnicalErrorException e) {
-    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECNICO, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECHNICAL_ERROR, e);
   }
 
   private ResponseEntity<ErrorsResponseDto> logAndGetResponseEntity(
@@ -230,8 +236,8 @@ public class ExceptionManager {
         .errors(rejections.stream().map(rejection ->
             ErrorDto.builder()
                 .status(Integer.toString(HttpStatus.UNPROCESSABLE_ENTITY.value()))
-                .code(ErrorCodes.PARAMETRO_NO_VALIDO.getCode())
-                .title(ErrorCodes.PARAMETRO_NO_VALIDO.getMessage())
+                .code(ErrorCodes.INVALID_PARAM.getCode())
+                .title(ErrorCodes.INVALID_PARAM.getMessage())
                 .source(rejection.getSource())
                 .detail(rejection.getDetail())
                 .build())

@@ -1,4 +1,4 @@
-package com.modyo.services.loggers;
+package com.modyo.ms.commons.core.loggers;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @JsonInclude(Include.NON_NULL)
 @Slf4j
 @Getter
-public class TaskLogger extends Logger {
+public class TaskLogger extends CommonsLogger {
 
   private String taskName;
   private String errorMessage;
