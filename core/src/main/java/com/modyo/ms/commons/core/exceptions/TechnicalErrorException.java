@@ -4,7 +4,7 @@ import com.modyo.ms.commons.core.dtos.Dto;
 import lombok.Getter;
 
 /**
- * Excepción para manejar errores técnicos en tiempos de ejecución.
+ * Used for throw exceptions when is need to handle a technical error
  */
 @Getter
 public class TechnicalErrorException extends DatasourceErrorException {

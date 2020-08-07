@@ -4,7 +4,7 @@ import com.modyo.ms.commons.core.dtos.Dto;
 import lombok.Getter;
 
 /**
- * Excepción para manejar errores de negocio.
+ * Used when the business logic needs to throw an exception
  */
 @Getter
 public class BusinessErrorException extends DatasourceErrorException {
