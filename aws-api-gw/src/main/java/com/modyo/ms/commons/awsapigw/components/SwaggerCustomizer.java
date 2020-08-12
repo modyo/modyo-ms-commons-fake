@@ -85,6 +85,11 @@ public class SwaggerCustomizer {
     }
     setSwaggerApiGwCors();
     swagger.setSecurityDefinitions(getSecurityDefinitions());
+    swagger.getDefinitions().forEach((modelName, model) -> {
+      model.getProperties().forEach((propertyName, property) -> {
+        property.setExample((Object)null);
+      });
+    });
     return swagger;
   }
 
