@@ -57,9 +57,9 @@ public class CorsProperties {
   @JsonIgnore
   public Map<String, Object> getCorsResponseParameters() {
     Map<String, Object> responseParameters =  new HashMap<>();
-//    responseParameters.put(
-//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
-//        "'" + String.join(",", getAllowOrigins()) + "'");
+    responseParameters.put(
+        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
+        "'" + String.join(",", getAllowOrigins()) + "'");
 //    responseParameters.put(
 //        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
 //        "'" + String.join(",", getAllowMethods()) + "'");
