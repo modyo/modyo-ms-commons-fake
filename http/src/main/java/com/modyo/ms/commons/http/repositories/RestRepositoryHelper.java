@@ -96,6 +96,8 @@ public class RestRepositoryHelper {
         webServiceProperties.getBaseUrl() + methodProperties.getPath());
     Optional.ofNullable(requestParams.getPaths())
         .ifPresent(pathList -> pathList.forEach(uriBuilder::pathSegment));
+    Optional.ofNullable(methodProperties.getQueryParams())
+        .ifPresent(queryParamsMap -> queryParamsMap.forEach(uriBuilder::queryParam));
     Optional.ofNullable(requestParams.getQueryParams())
         .ifPresent(queryParamsMap -> queryParamsMap.forEach(uriBuilder::queryParam));
 
