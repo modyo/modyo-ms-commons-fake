@@ -1,5 +1,6 @@
 package com.modyo.ms.commons.http.config.properties;
 
+import java.util.Collections;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -20,11 +21,11 @@ public class SwaggerProperties {
 
   @NotNull
   @Valid
-  private ApiInfoProperties apiInfo;
+  private ApiInfoProperties apiInfo = new ApiInfoProperties();
 
-  @Size(min=1)
+  @Size(min=0)
   @Valid
-  private List<TagProperty> tags;
+  private List<TagProperty> tags = Collections.emptyList();
 
   @Setter
   @Getter
