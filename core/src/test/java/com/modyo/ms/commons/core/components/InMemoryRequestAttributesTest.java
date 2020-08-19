@@ -50,4 +50,13 @@ public class InMemoryRequestAttributesTest {
     assertThat(responseKeys[0], is(existingKey));
   }
 
+  @Test
+  public void registerDestructionCallback() {
+    inMemoryRequestAttributes.registerDestructionCallback(
+        "test",
+        () -> {},
+        0
+    );
+  }
+
 }
