@@ -13,6 +13,7 @@ public class RestMethodProperties {
   private String path;
   private HttpMethod httpMethod;
   private MultiValueMap<String, String> headers;
+  private MultiValueMap<String, String> queryParams;
   private Map<String, String> body;
 
 }
