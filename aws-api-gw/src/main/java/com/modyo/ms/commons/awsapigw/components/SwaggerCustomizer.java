@@ -86,15 +86,14 @@ public class SwaggerCustomizer {
     }
     setSwaggerApiGwCors();
     swagger.setSecurityDefinitions(getSecurityDefinitions());
-    swagger.getDefinitions().forEach((modelName, model) -> {
-      model.getProperties().forEach((propertyName, property) -> {
-        property.setExample((Object)null);
-        if(property instanceof StringProperty
-            && ((StringProperty) property).getEnum() != null) {
-          ((StringProperty) property).setEnum(null);
-        }
-      });
-    });
+    swagger.getDefinitions().forEach((modelName, model) -> model
+        .getProperties().forEach((propertyName, property) -> {
+          property.setExample((Object) null);
+          if (property instanceof StringProperty
+              && ((StringProperty) property).getEnum() != null) {
+            ((StringProperty) property).setEnum(null);
+          }
+        }));
     return swagger;
   }
 
@@ -110,7 +109,7 @@ public class SwaggerCustomizer {
   }
 
   private void setSwaggerBinaryMediaTypes() {
-    if(!swaggerProperties.getXAmazonApigatewayBinaryMediaTypes().isEmpty()) {
+    if (!swaggerProperties.getXAmazonApigatewayBinaryMediaTypes().isEmpty()) {
       swagger.getInfo().setVendorExtension(
           "x-amazon-apigateway-binary-media-types",
           swaggerProperties.getXAmazonApigatewayBinaryMediaTypes());
@@ -178,6 +177,7 @@ public class SwaggerCustomizer {
 
   private Map<String, Object> buildRequestParameters(Operation operation) {
     return operation.getParameters().stream()
+        .filter(parameter -> !parameter.getIn().equals("body"))
         .collect(Collectors.toMap(
             parameter -> I_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName(),
             parameter -> M_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName()));
