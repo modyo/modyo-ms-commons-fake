@@ -16,6 +16,7 @@ import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.SecuritySchemeDefinition;
+import io.swagger.models.properties.StringProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,10 @@ public class SwaggerCustomizer {
     swagger.getDefinitions().forEach((modelName, model) -> {
       model.getProperties().forEach((propertyName, property) -> {
         property.setExample((Object)null);
+        if(property instanceof StringProperty
+            && ((StringProperty) property).getEnum() != null) {
+          ((StringProperty) property).setEnum(null);
+        }
       });
     });
     return swagger;
