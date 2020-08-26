@@ -1,0 +1,18 @@
+{
+  "number": 2,
+  "world": "world2",
+  "nestedObject": {
+    "nestedNumber": 22,
+    "nestedWorld": "nestedWorld2",
+    "nestedObjects": [
+      {
+        "nestedNumber": 221,
+        "nestedWorld": "world221"
+      },
+      {
+        "nestedNumber": 222,
+        "nestedWorld": "world112"
+      }
+    ]
+  }
+}
