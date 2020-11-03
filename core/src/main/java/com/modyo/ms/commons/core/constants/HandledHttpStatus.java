@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public class HandledHttpStatus {
   private static final HttpStatus[] list = {
       HttpStatus.OK,
+      HttpStatus.CREATED,
       HttpStatus.NO_CONTENT,
       HttpStatus.BAD_REQUEST,
       HttpStatus.UNAUTHORIZED,
