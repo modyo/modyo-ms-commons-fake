@@ -1,0 +1,135 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.modyo.ms.commons",
+    "module": "aws-api-gw",
+    "version": "2.2.3-RELEASE",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "6.2",
+      "buildId": "47kjqyt6yrc2dozmfckomz5w2a"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "aws-api-gw-2.2.3-RELEASE.jar",
+          "url": "aws-api-gw-2.2.3-RELEASE.jar",
+          "size": 19020,
+          "sha512": "4fcb2d051fc379dc4282826ce88ff464f2ba12fd815155d26fc7fdbcd3c850ebef7071e6cb0944fee6c23a4fb5bac4de434b2d9f7255ff5e17789d55b76ec356",
+          "sha256": "7da22a674566eba5981fb579214619e222134f62b5f80114943e5e4fb4522d06",
+          "sha1": "cb46f03eb3d0d2b79e42ea90f15f585aa9ac7c11",
+          "md5": "620296ae6390725b12bcf801d0406b51"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 11,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.modyo.ms.commons",
+          "module": "core",
+          "version": {
+            "requires": "2.2.3-RELEASE"
+          },
+          "excludes": [
+            {
+              "group": "org.apache.tomcat",
+              "module": "tomcat-annotations-api"
+            }
+          ]
+        },
+        {
+          "group": "com.modyo.ms.commons",
+          "module": "http",
+          "version": {
+            "requires": "2.2.3-RELEASE"
+          },
+          "excludes": [
+            {
+              "group": "org.apache.tomcat",
+              "module": "tomcat-annotations-api"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-web",
+          "excludes": [
+            {
+              "group": "org.apache.tomcat",
+              "module": "tomcat-annotations-api"
+            }
+          ]
+        },
+        {
+          "group": "io.springfox",
+          "module": "springfox-swagger2",
+          "version": {
+            "requires": "2.9.2"
+          },
+          "excludes": [
+            {
+              "group": "org.apache.tomcat",
+              "module": "tomcat-annotations-api"
+            }
+          ]
+        },
+        {
+          "group": "io.springfox",
+          "module": "springfox-swagger-ui",
+          "version": {
+            "requires": "2.9.2"
+          },
+          "excludes": [
+            {
+              "group": "org.apache.tomcat",
+              "module": "tomcat-annotations-api"
+            }
+          ]
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-configuration-processor",
+          "excludes": [
+            {
+              "group": "org.apache.tomcat",
+              "module": "tomcat-annotations-api"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "aws-api-gw-2.2.3-RELEASE.jar",
+          "url": "aws-api-gw-2.2.3-RELEASE.jar",
+          "size": 19020,
+          "sha512": "4fcb2d051fc379dc4282826ce88ff464f2ba12fd815155d26fc7fdbcd3c850ebef7071e6cb0944fee6c23a4fb5bac4de434b2d9f7255ff5e17789d55b76ec356",
+          "sha256": "7da22a674566eba5981fb579214619e222134f62b5f80114943e5e4fb4522d06",
+          "sha1": "cb46f03eb3d0d2b79e42ea90f15f585aa9ac7c11",
+          "md5": "620296ae6390725b12bcf801d0406b51"
+        }
+      ]
+    }
+  ]
+}
