@@ -46,7 +46,7 @@ class AuditJpaEntity {
   private String event;
 
   @Column(name = "log_level")
-  @Enumerated
+  @Enumerated(EnumType.STRING)
   private LogLevel logLevel;
 
   @Column(name = "initial_value", columnDefinition = "LONGTEXT")
