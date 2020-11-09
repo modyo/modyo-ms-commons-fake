@@ -18,9 +18,6 @@ class AuditJpaEntityFactory {
       Object parentValue, Object initialValue, Object newValue,
       ChangeType changeType, String event) {
     AuditJpaEntity entity = new AuditJpaEntity();
-    if (!isSameType(initialValue, newValue)) {
-      throw new IllegalArgumentException("initValue and newValue must be of the same type");
-    }
     String parentId = Optional.ofNullable(auditableParentId).orElse(auditableId);
     Object calculatedParentValue = Optional.ofNullable(parentValue).orElse(initialValue);
 
@@ -49,14 +46,6 @@ class AuditJpaEntityFactory {
     } catch (Exception e) {
       return "";
     }
-  }
-
-  private static boolean isSameType(Object obj1, Object obj2) {
-    return (obj1 == obj2 ||
-        (obj1 != null
-            && obj2 != null
-            && obj1.getClass() == obj2.getClass())
-    );
   }
 
 
