@@ -59,21 +59,6 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getNewValue(), is("{\"id\":\"after\"}"));
   }
 
-  @Test
-  void create_whenInitialAndNewValueDoNotHaveTheSameType_ThenThrowIllegalArgumentException() {
-    String entityId = "entityId";
-    assertThrows(IllegalArgumentException.class, () -> AuditJpaEntityFactory.create(
-        LogLevel.INFO,
-        entityId,
-        entityId,
-        new ParentClass("parent"),
-        new ParentClass("before"),
-        new OtherClass("after"),
-        ChangeType.CHANGE_STATUS,
-        "Changed status"
-    ));
-  }
-
   static class ParentClass {
     private final String id;
 
