@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateAuditLogServiceAdapter implements CreateAuditLogService {
+class CreateAuditLogServiceAdapter implements CreateAuditLogService {
 
   private final AuditJpaRepository auditJpaRepository;
 

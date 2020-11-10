@@ -1,5 +1,7 @@
 package com.modyo.ms.commons.audit.aspect;
 
+import com.modyo.ms.commons.audit.service.ChangeType;
+import java.util.Optional;
 import org.springframework.web.context.request.RequestContextHolder;
 
 public class AuditContext {
@@ -9,6 +11,8 @@ public class AuditContext {
   private static final String INITIAL_VALUE = "audit_initial_value";
   private static final String NEW_VALUE = "audit_new_value";
   private static final String ENTITY_ID = "audit_entity_id";
+  private static final String CHANGE_TYPE = "audit_change_type";
+  private static final String EVENT_NAME = "audit_event_name";
 
   private static final Integer AUDIT_SCOPE = 0;
 
@@ -35,23 +39,39 @@ public class AuditContext {
     RequestContextHolder.currentRequestAttributes().setAttribute(NEW_VALUE, value, AUDIT_SCOPE);
   }
 
-  public static Object getParentEntity() {
+  public static void setEventInfo(ChangeType changeType, String eventName) {
+    RequestContextHolder.currentRequestAttributes().setAttribute(CHANGE_TYPE, changeType.toString(), AUDIT_SCOPE);
+    RequestContextHolder.currentRequestAttributes().setAttribute(EVENT_NAME, eventName, AUDIT_SCOPE);
+  }
+
+  static ChangeType getChangeType() {
+    String string = (String) RequestContextHolder.currentRequestAttributes().getAttribute(CHANGE_TYPE, AUDIT_SCOPE);
+    return Optional.ofNullable(string)
+        .map(ChangeType::valueOf)
+        .orElse(null);
+  }
+
+  static String getEventName() {
+    return (String) RequestContextHolder.currentRequestAttributes().getAttribute(EVENT_NAME, AUDIT_SCOPE);
+  }
+
+  static Object getParentEntity() {
     return RequestContextHolder.currentRequestAttributes().getAttribute(PARENT_ENTITY, AUDIT_SCOPE);
   }
 
-  public static Object getInitialValue() {
+  static Object getInitialValue() {
     return RequestContextHolder.currentRequestAttributes().getAttribute(INITIAL_VALUE, AUDIT_SCOPE);
   }
 
-  public static Object getNewValue() {
+  static Object getNewValue() {
     return RequestContextHolder.currentRequestAttributes().getAttribute(NEW_VALUE, AUDIT_SCOPE);
   }
 
-  public static String getParentEntityId() {
+  static String getParentEntityId() {
     return (String) RequestContextHolder.currentRequestAttributes().getAttribute(PARENT_ENTITY_ID, AUDIT_SCOPE);
   }
 
-  public static String getChildEntityId() {
+  static String getChildEntityId() {
     return (String) RequestContextHolder.currentRequestAttributes().getAttribute(ENTITY_ID, AUDIT_SCOPE);
   }
 

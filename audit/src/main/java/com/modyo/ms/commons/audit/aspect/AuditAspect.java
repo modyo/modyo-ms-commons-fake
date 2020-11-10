@@ -21,56 +21,23 @@ import org.springframework.stereotype.Component;
 class AuditAspect {
 
   private final CreateAuditLogService createAuditLogService;
-  private static final Logger logger = LoggerFactory.getLogger(AuditAspect.class);
 
   @Around("@annotation(com.modyo.ms.commons.audit.aspect.ModyoAudit)")
   public Object audit(ProceedingJoinPoint joinPoint) throws Throwable {
 
     try {
-      Object result = joinPoint.proceed();
+      ModyoAudit modyoAudit = getModyoAudit(joinPoint);
+      AuditContext.setEventInfo(modyoAudit.changeType(), modyoAudit.event());
 
-      logInfo(joinPoint);
+      Object result = joinPoint.proceed();
+      AuditContextHelper.logInfo(createAuditLogService, AuditContext.getInitialValue(), AuditContext.getNewValue());
       return result;
     } catch (Exception e) {
-      logError(joinPoint, e);
+      AuditContextHelper.logError(createAuditLogService, e);
       throw e;
     }
 
 
-  }
-
-  private void logInfo(ProceedingJoinPoint joinPoint) {
-    try {
-      createAuditLogService.logInfo(
-          AuditContext.getChildEntityId(),
-          AuditContext.getParentEntityId(),
-          AuditContext.getParentEntity(),
-          AuditContext.getInitialValue(),
-          AuditContext.getNewValue(),
-          getModyoAudit(joinPoint).changeType(),
-          getModyoAudit(joinPoint).event()
-      );
-    } catch (Exception e) {
-      logger.error("Error in createAuditLogService.logInfo: {}", e.getMessage());
-    }
-  }
-
-  private void logError(ProceedingJoinPoint joinPoint, Exception exception) {
-    try {
-      createAuditLogService.logError(
-          AuditContext.getChildEntityId(),
-          AuditContext.getParentEntityId(),
-          AuditContext.getParentEntity(),
-          AuditContext.getInitialValue(),
-          new ErrorMessageDto(exception.getClass().getName(),
-              exception.getMessage(),
-              Arrays.toString(exception.getStackTrace())),
-          getModyoAudit(joinPoint).changeType(),
-          getModyoAudit(joinPoint).event()
-      );
-    } catch (Exception e) {
-      logger.error("Error in createAuditLogService.logError: {}", e.getMessage());
-    }
   }
 
   private ModyoAudit getModyoAudit(ProceedingJoinPoint joinPoint) {
