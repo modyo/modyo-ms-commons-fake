@@ -18,6 +18,22 @@ class AuditContextHelper {
 
   }
 
+  public static void logSuccess(CreateAuditLogService createAuditLogService, Object initValue, Object newValue) {
+    try {
+      createAuditLogService.logSuccess(
+          AuditContext.getChildEntityId(),
+          AuditContext.getParentEntityId(),
+          AuditContext.getParentEntity(),
+          initValue,
+          newValue,
+          AuditContext.getChangeType(),
+          AuditContext.getEventName()
+      );
+    } catch (Exception e) {
+      logger.error("Error in createAuditLogService.logSuccess: {}", e.getMessage());
+    }
+  }
+
   public static void logInfo(CreateAuditLogService createAuditLogService, Object initValue, Object newValue) {
     try {
       createAuditLogService.logInfo(

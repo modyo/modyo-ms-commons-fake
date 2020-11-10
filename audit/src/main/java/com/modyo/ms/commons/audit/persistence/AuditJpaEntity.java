@@ -1,5 +1,6 @@
 package com.modyo.ms.commons.audit.persistence;
 
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.ChangeType;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
@@ -45,9 +46,9 @@ class AuditJpaEntity {
   @Column(name = "event")
   private String event;
 
-  @Column(name = "log_level")
+  @Column(name = "log_type")
   @Enumerated(EnumType.STRING)
-  private LogLevel logLevel;
+  private AuditLogType logType;
 
   @Column(name = "initial_value", columnDefinition = "LONGTEXT")
   private String initialValue;

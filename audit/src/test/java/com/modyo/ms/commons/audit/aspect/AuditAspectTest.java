@@ -34,7 +34,6 @@ class AuditAspectTest {
   private final Object childEntityAfter = new Object();
   private final String parentEntityId = "pid";
   private final String childEntityId = "cid";
-  private final ModyoAudit modyoAudit = new ModyoAuditTestImpl();
 
   private final Object joinPointResponse = new Object();
 
@@ -52,14 +51,14 @@ class AuditAspectTest {
   }
 
   @Test
-  void audit_WhenJoinPointExecutes_ThenLogInfo() throws Throwable {
+  void audit_WhenJoinPointExecutes_ThenLogSuccess() throws Throwable {
     AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditContext.setNewValue(childEntityAfter);
     when(joinPoint.proceed()).thenReturn(joinPointResponse);
 
     aspectUnderTest.audit(joinPoint);
 
-    then(createAuditLogService).should().logInfo(
+    then(createAuditLogService).should().logSuccess(
         childEntityId, parentEntityId, parentEntity,
         childEntityBefore, childEntityAfter, ChangeType.CHANGE_STATUS, "my event"
     );
@@ -67,7 +66,7 @@ class AuditAspectTest {
   }
 
   @Test
-  void audit_WhenJoinPointExecutes_ButLogInfo_ThenDoNotThrowException() throws Throwable {
+  void audit_WhenJoinPointExecutes_ButLogSuccessFails_ThenDoNotThrowException() throws Throwable {
     AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditContext.setNewValue(childEntityAfter);
     when(joinPoint.proceed()).thenReturn(joinPointResponse);
@@ -75,7 +74,7 @@ class AuditAspectTest {
 
     aspectUnderTest.audit(joinPoint);
 
-    then(createAuditLogService).should().logInfo(
+    then(createAuditLogService).should().logSuccess(
         childEntityId, parentEntityId, parentEntity,
         childEntityBefore, childEntityAfter, ChangeType.CHANGE_STATUS, "my event"
     );

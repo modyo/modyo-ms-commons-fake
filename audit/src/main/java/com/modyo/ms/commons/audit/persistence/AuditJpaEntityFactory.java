@@ -3,9 +3,9 @@ package com.modyo.ms.commons.audit.persistence;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.ChangeType;
 import java.util.Optional;
-import org.springframework.boot.logging.LogLevel;
 
 class AuditJpaEntityFactory {
 
@@ -14,7 +14,7 @@ class AuditJpaEntityFactory {
   }
 
   public static AuditJpaEntity create(
-      LogLevel logLevel, String auditableId, String auditableParentId,
+      AuditLogType logLevel, String auditableId, String auditableParentId,
       Object parentValue, Object initialValue, Object newValue,
       ChangeType changeType, String event) {
     AuditJpaEntity entity = new AuditJpaEntity();
@@ -29,7 +29,7 @@ class AuditJpaEntityFactory {
     entity.setNewValue(toJson(newValue));
     entity.setChangeType(changeType);
     entity.setEvent(event);
-    entity.setLogLevel(logLevel);
+    entity.setLogType(logLevel);
 
     return entity;
   }

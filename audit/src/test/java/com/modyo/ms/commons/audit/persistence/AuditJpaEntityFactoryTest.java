@@ -2,18 +2,17 @@ package com.modyo.ms.commons.audit.persistence;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.ChangeType;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.logging.LogLevel;
 
 class AuditJpaEntityFactoryTest {
 
   @Test
   void create_withChildAndParentInfo() {
     AuditJpaEntity auditJpaEntity = AuditJpaEntityFactory.create(
-        LogLevel.INFO,
+        AuditLogType.INFO,
         "childId",
         "parentId",
         new ParentClass("parent"),
@@ -29,7 +28,7 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getAuditableParentType(), is("ParentClass"));
     assertThat(auditJpaEntity.getChangeType(), is(ChangeType.CHANGE_STATUS));
     assertThat(auditJpaEntity.getEvent(), is("Changed status"));
-    assertThat(auditJpaEntity.getLogLevel(), is(LogLevel.INFO));
+    assertThat(auditJpaEntity.getLogType(), is(AuditLogType.INFO));
     assertThat(auditJpaEntity.getInitialValue(), is("{\"id\":\"before\"}"));
     assertThat(auditJpaEntity.getNewValue(), is("{\"id\":\"after\"}"));
   }
@@ -38,7 +37,7 @@ class AuditJpaEntityFactoryTest {
   void create_withOnlyParentInfo() {
     String entityId = "entityId";
     AuditJpaEntity auditJpaEntity = AuditJpaEntityFactory.create(
-        LogLevel.ERROR,
+        AuditLogType.ERROR,
         entityId,
         null,
         null,
@@ -54,7 +53,7 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getAuditableParentType(), is("ParentClass"));
     assertThat(auditJpaEntity.getChangeType(), is(ChangeType.CHANGE_STATUS));
     assertThat(auditJpaEntity.getEvent(), is("Changed status"));
-    assertThat(auditJpaEntity.getLogLevel(), is(LogLevel.ERROR));
+    assertThat(auditJpaEntity.getLogType(), is(AuditLogType.ERROR));
     assertThat(auditJpaEntity.getInitialValue(), is("{\"id\":\"before\"}"));
     assertThat(auditJpaEntity.getNewValue(), is("{\"id\":\"after\"}"));
   }

@@ -30,7 +30,7 @@ class AuditAspect {
       AuditContext.setEventInfo(modyoAudit.changeType(), modyoAudit.event());
 
       Object result = joinPoint.proceed();
-      AuditContextHelper.logInfo(createAuditLogService, AuditContext.getInitialValue(), AuditContext.getNewValue());
+      AuditContextHelper.logSuccess(createAuditLogService, AuditContext.getInitialValue(), AuditContext.getNewValue());
       return result;
     } catch (Exception e) {
       AuditContextHelper.logError(createAuditLogService, e);

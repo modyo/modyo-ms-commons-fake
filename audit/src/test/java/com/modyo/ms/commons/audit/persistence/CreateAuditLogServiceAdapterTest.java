@@ -3,6 +3,7 @@ package com.modyo.ms.commons.audit.persistence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.ChangeType;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,40 +36,33 @@ class CreateAuditLogServiceAdapterTest {
 
   @Test
   void logInfo_success() {
-    adapterUnderTest.logInfo("id", new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
-
-    List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
-    assertThat(auditJpaEntityList.size(), is(1));
-    assertThat(auditJpaEntityList.get(0).getLogLevel(), is(LogLevel.INFO));
-  }
-
-  @Test
-  void logInfo_withParent_success() {
     adapterUnderTest.logInfo("id", "pid", new Object(), new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));
-    assertThat(auditJpaEntityList.get(0).getLogLevel(), is(LogLevel.INFO));
+    assertThat(auditJpaEntityList.get(0).getLogType(), is(AuditLogType.INFO));
+  }
+
+  @Test
+  void logSuccess_success() {
+    adapterUnderTest.logSuccess("id", "pid",
+        new Object(), new Object(), new Object(),
+        ChangeType.CHANGE_STATUS, "changed");
+
+    List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
+    assertThat(auditJpaEntityList.size(), is(1));
+    assertThat(auditJpaEntityList.get(0).getLogType(), is(AuditLogType.SUCCESS));
   }
 
   @Test
   void logError_success() {
-    adapterUnderTest.logError("id", new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
-
-    List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
-    assertThat(auditJpaEntityList.size(), is(1));
-    assertThat(auditJpaEntityList.get(0).getLogLevel(), is(LogLevel.ERROR));
-  }
-
-  @Test
-  void logError_withParent_success() {
     adapterUnderTest.logError("id", "pid",
         new Object(), new Object(), new Object(),
         ChangeType.CHANGE_STATUS, "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));
-    assertThat(auditJpaEntityList.get(0).getLogLevel(), is(LogLevel.ERROR));
+    assertThat(auditJpaEntityList.get(0).getLogType(), is(AuditLogType.ERROR));
   }
 
 
