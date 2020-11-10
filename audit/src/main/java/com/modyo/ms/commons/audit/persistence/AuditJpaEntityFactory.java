@@ -1,7 +1,6 @@
 package com.modyo.ms.commons.audit.persistence;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.ChangeType;
@@ -44,9 +43,8 @@ class AuditJpaEntityFactory {
   private static String toJson(Object entity) {
     try {
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
       return objectMapper.writeValueAsString(entity);
-    } catch (Exception e) {
+    } catch (JsonProcessingException e) {
       return "";
     }
   }

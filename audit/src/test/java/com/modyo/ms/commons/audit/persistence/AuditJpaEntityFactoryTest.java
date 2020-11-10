@@ -70,13 +70,22 @@ class AuditJpaEntityFactoryTest {
     public ParentClass(String id) {
       this.id = id;
     }
+
+    public String getId() {
+      return id;
+    }
   }
 
   static class ChildClass {
     private final String id;
+    private final String other = "other";
 
     public ChildClass(String id) {
       this.id = id;
+    }
+
+    public String getId() {
+      return id;
     }
   }
 
@@ -85,6 +94,10 @@ class AuditJpaEntityFactoryTest {
 
     public OtherClass(String id) {
       this.id = id;
+    }
+
+    public String getId() {
+      return id;
     }
   }
 
