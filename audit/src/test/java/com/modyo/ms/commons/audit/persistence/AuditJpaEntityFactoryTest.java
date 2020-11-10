@@ -18,6 +18,8 @@ class AuditJpaEntityFactoryTest {
         new ParentClass("parent"),
         new ChildClass("before"),
         new ChildClass("after"),
+        "Creator",
+        "User-Agent",
         ChangeType.CHANGE_STATUS,
         "Changed status"
     );
@@ -26,6 +28,8 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getAuditableType(), is("ChildClass"));
     assertThat(auditJpaEntity.getAuditableParentId(), is("parentId"));
     assertThat(auditJpaEntity.getAuditableParentType(), is("ParentClass"));
+    assertThat(auditJpaEntity.getCreatedBy(), is("Creator"));
+    assertThat(auditJpaEntity.getUserAgent(), is("User-Agent"));
     assertThat(auditJpaEntity.getChangeType(), is(ChangeType.CHANGE_STATUS));
     assertThat(auditJpaEntity.getEvent(), is("Changed status"));
     assertThat(auditJpaEntity.getLogType(), is(AuditLogType.INFO));
@@ -43,6 +47,8 @@ class AuditJpaEntityFactoryTest {
         null,
         new ParentClass("before"),
         new ParentClass("after"),
+        "Creator",
+        "User-Agent",
         ChangeType.CHANGE_STATUS,
         "Changed status"
     );

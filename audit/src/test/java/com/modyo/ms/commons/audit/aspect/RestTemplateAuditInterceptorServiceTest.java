@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.ChangeType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
@@ -47,7 +48,7 @@ class RestTemplateAuditInterceptorServiceTest {
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
         new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
-    then(createAuditLogService).should().logInfo(
+    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
         eq(ChangeType.CHANGE_STATUS), eq("http request")
@@ -56,16 +57,17 @@ class RestTemplateAuditInterceptorServiceTest {
   }
 
   @Test
-  void audit_WhenLogInfoFails_ThenDoNotThrowException() throws Throwable {
+  void audit_WhenLogInfoFails_ThenDoNotThrowException() {
     AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditContext.setNewValue(childEntityAfter);
-    doThrow(IllegalArgumentException.class).when(createAuditLogService).logInfo(anyString(), anyString(), any(), any(), any(), any(), anyString());
+    doThrow(IllegalArgumentException.class).when(createAuditLogService)
+        .log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
 
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
         new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
-    then(createAuditLogService).should().logInfo(
+    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
         eq(ChangeType.CHANGE_STATUS), eq("http request")

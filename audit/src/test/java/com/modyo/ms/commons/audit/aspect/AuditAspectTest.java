@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.aspect.AuditAspect.ErrorMessageDto;
 import com.modyo.ms.commons.audit.service.ChangeType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
@@ -58,7 +59,7 @@ class AuditAspectTest {
 
     aspectUnderTest.audit(joinPoint);
 
-    then(createAuditLogService).should().logSuccess(
+    then(createAuditLogService).should().log(AuditLogType.SUCCESS,
         childEntityId, parentEntityId, parentEntity,
         childEntityBefore, childEntityAfter, ChangeType.CHANGE_STATUS, "my event"
     );
@@ -70,11 +71,12 @@ class AuditAspectTest {
     AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditContext.setNewValue(childEntityAfter);
     when(joinPoint.proceed()).thenReturn(joinPointResponse);
-    doThrow(IllegalArgumentException.class).when(createAuditLogService).logInfo(anyString(), anyString(), any(), any(), any(), any(), anyString());
+    doThrow(IllegalArgumentException.class)
+        .when(createAuditLogService).log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
 
     aspectUnderTest.audit(joinPoint);
 
-    then(createAuditLogService).should().logSuccess(
+    then(createAuditLogService).should().log(AuditLogType.SUCCESS,
         childEntityId, parentEntityId, parentEntity,
         childEntityBefore, childEntityAfter, ChangeType.CHANGE_STATUS, "my event"
     );
@@ -88,7 +90,7 @@ class AuditAspectTest {
 
     assertThrows(BusinessErrorException.class, () -> aspectUnderTest.audit(joinPoint));
 
-    then(createAuditLogService).should().logError(
+    then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         eq(childEntityBefore), any(ErrorMessageDto.class), eq(ChangeType.CHANGE_STATUS), eq("my event")
     );
@@ -99,11 +101,12 @@ class AuditAspectTest {
   void audit_WhenJoinPointThrowsException_ButLogErrorFails_ThenThrowOriginalException() throws Throwable {
     AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
     when(joinPoint.proceed()).thenThrow(new BusinessErrorException("business", null));
-    doThrow(IllegalArgumentException.class).when(createAuditLogService).logError(anyString(), anyString(), any(), any(), any(), any(), anyString());
+    doThrow(IllegalArgumentException.class)
+        .when(createAuditLogService).log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
 
     assertThrows(BusinessErrorException.class, () -> aspectUnderTest.audit(joinPoint));
 
-    then(createAuditLogService).should().logError(
+    then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         eq(childEntityBefore), any(ErrorMessageDto.class), eq(ChangeType.CHANGE_STATUS), eq("my event")
     );

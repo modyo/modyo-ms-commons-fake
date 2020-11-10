@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.boot.logging.LogLevel;
 
 @Entity
 @Table(name = "Audit")
@@ -62,5 +61,8 @@ class AuditJpaEntity {
 
   @Column(name = "created_by")
   private String createdBy;
+
+  @Column(name = "user_agent")
+  private String userAgent;
 
 }

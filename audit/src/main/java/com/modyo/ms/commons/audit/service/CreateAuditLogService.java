@@ -1,15 +1,11 @@
 package com.modyo.ms.commons.audit.service;
 
 
+import com.modyo.ms.commons.audit.AuditLogType;
+
 public interface CreateAuditLogService {
 
-  void logInfo(String auditableId, String auditableParentId, Object parentValue, Object initialValue, Object newValue,
-      ChangeType changeType, String event);
-
-  void logSuccess(String auditableId, String auditableParentId, Object parentValue, Object initialValue, Object newValue,
-      ChangeType changeType, String event);
-
-  void logError(String auditableId, String auditableParentId, Object parentValue, Object initialValue, Object newValue,
+  void log(AuditLogType logType, String auditableId, String auditableParentId, Object parentValue, Object initialValue, Object newValue,
       ChangeType changeType, String event);
 
 
