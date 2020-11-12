@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "Audit")
 @Data
 @NoArgsConstructor
-class AuditJpaEntity {
+public class AuditJpaEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
