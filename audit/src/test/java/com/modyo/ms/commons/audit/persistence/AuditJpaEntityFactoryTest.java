@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import com.modyo.ms.commons.audit.AuditLogType;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import org.junit.jupiter.api.Test;
 
 class AuditJpaEntityFactoryTest {
@@ -20,7 +19,7 @@ class AuditJpaEntityFactoryTest {
         new ChildClass("after"),
         "Creator",
         "User-Agent",
-        ChangeType.CHANGE_STATUS,
+        "CHANGE_STATUS",
         "Changed status"
     );
 
@@ -30,7 +29,7 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getAuditableParentType(), is("ParentClass"));
     assertThat(auditJpaEntity.getCreatedBy(), is("Creator"));
     assertThat(auditJpaEntity.getUserAgent(), is("User-Agent"));
-    assertThat(auditJpaEntity.getChangeType(), is(ChangeType.CHANGE_STATUS));
+    assertThat(auditJpaEntity.getChangeType(), is("CHANGE_STATUS"));
     assertThat(auditJpaEntity.getEvent(), is("Changed status"));
     assertThat(auditJpaEntity.getLogType(), is(AuditLogType.INFO));
     assertThat(auditJpaEntity.getInitialValue(), is("{\"id\":\"before\"}"));
@@ -49,7 +48,7 @@ class AuditJpaEntityFactoryTest {
         new ParentClass("after"),
         "Creator",
         "User-Agent",
-        ChangeType.CHANGE_STATUS,
+        "CHANGE_STATUS",
         "Changed status"
     );
 
@@ -57,7 +56,7 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getAuditableType(), is("ParentClass"));
     assertThat(auditJpaEntity.getAuditableParentId(), is(entityId));
     assertThat(auditJpaEntity.getAuditableParentType(), is("ParentClass"));
-    assertThat(auditJpaEntity.getChangeType(), is(ChangeType.CHANGE_STATUS));
+    assertThat(auditJpaEntity.getChangeType(), is("CHANGE_STATUS"));
     assertThat(auditJpaEntity.getEvent(), is("Changed status"));
     assertThat(auditJpaEntity.getLogType(), is(AuditLogType.ERROR));
     assertThat(auditJpaEntity.getInitialValue(), is("{\"id\":\"before\"}"));

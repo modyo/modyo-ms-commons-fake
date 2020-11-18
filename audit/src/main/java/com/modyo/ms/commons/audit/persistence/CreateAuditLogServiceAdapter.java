@@ -1,7 +1,6 @@
 package com.modyo.ms.commons.audit.persistence;
 
 import com.modyo.ms.commons.audit.AuditLogType;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import com.modyo.ms.commons.core.utils.JwtToken;
@@ -29,7 +28,7 @@ class CreateAuditLogServiceAdapter implements CreateAuditLogService {
 
   @Override
   public void log(AuditLogType logLevel, String auditableId, String auditableParentId, Object parentValue, Object initialValue,
-      Object newValue, ChangeType changeType, String event) {
+      Object newValue, String changeType, String event) {
 
     AuditJpaEntity auditJpaEntity = AuditJpaEntityFactory.create(
         logLevel,

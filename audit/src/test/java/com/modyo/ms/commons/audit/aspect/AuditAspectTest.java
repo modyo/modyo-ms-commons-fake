@@ -10,11 +10,9 @@ import static org.mockito.Mockito.when;
 
 import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.aspect.AuditAspect.ErrorMessageDto;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
 import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
-import java.lang.annotation.Annotation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +44,7 @@ class AuditAspectTest {
     when(methodSignature.getMethod()).thenReturn(this.getClass().getMethod("testModyoAuditMethod"));
   }
 
-  @ModyoAudit(changeType = ChangeType.CHANGE_STATUS, event = "my event")
+  @ModyoAudit(changeType = "CHANGE_STATUS", event = "my event")
   public void testModyoAuditMethod() {
 
   }
@@ -61,7 +59,7 @@ class AuditAspectTest {
 
     then(createAuditLogService).should().log(AuditLogType.SUCCESS,
         childEntityId, parentEntityId, parentEntity,
-        childEntityBefore, childEntityAfter, ChangeType.CHANGE_STATUS, "my event"
+        childEntityBefore, childEntityAfter, "CHANGE_STATUS", "my event"
     );
 
   }
@@ -78,7 +76,7 @@ class AuditAspectTest {
 
     then(createAuditLogService).should().log(AuditLogType.SUCCESS,
         childEntityId, parentEntityId, parentEntity,
-        childEntityBefore, childEntityAfter, ChangeType.CHANGE_STATUS, "my event"
+        childEntityBefore, childEntityAfter, "CHANGE_STATUS", "my event"
     );
 
   }
@@ -92,7 +90,7 @@ class AuditAspectTest {
 
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
-        eq(childEntityBefore), any(ErrorMessageDto.class), eq(ChangeType.CHANGE_STATUS), eq("my event")
+        eq(childEntityBefore), any(ErrorMessageDto.class), eq("CHANGE_STATUS"), eq("my event")
     );
 
   }
@@ -108,27 +106,9 @@ class AuditAspectTest {
 
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
-        eq(childEntityBefore), any(ErrorMessageDto.class), eq(ChangeType.CHANGE_STATUS), eq("my event")
+        eq(childEntityBefore), any(ErrorMessageDto.class), eq("CHANGE_STATUS"), eq("my event")
     );
 
-  }
-
-  static class ModyoAuditTestImpl implements ModyoAudit {
-
-    @Override
-    public ChangeType changeType() {
-      return ChangeType.CHANGE_STATUS;
-    }
-
-    @Override
-    public String event() {
-      return "my event";
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return null;
-    }
   }
 
 }

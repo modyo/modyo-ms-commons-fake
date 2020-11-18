@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import com.modyo.ms.commons.audit.AuditLogType;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +47,7 @@ class CreateAuditLogServiceAdapterTest {
 
   @Test
   void log_withCreatedByAndUserAgent_success() {
-    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
+    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), "CHANGE_STATUS", "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));
@@ -62,7 +61,7 @@ class CreateAuditLogServiceAdapterTest {
     CreateAuditLogServiceAdapter customAdapterUnderTest
         = new CreateAuditLogServiceAdapter(auditJpaRepository, httpServletRequest, Optional.of("given_name"));
 
-    customAdapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
+    customAdapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), "CHANGE_STATUS", "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));
@@ -73,7 +72,7 @@ class CreateAuditLogServiceAdapterTest {
   @Test
   void log_WhenNoValidToken_ThenCreatedByIsUnknown() {
     when(httpServletRequest.getHeader(eq("Authorization"))).thenReturn("invalid token");
-    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
+    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), "CHANGE_STATUS", "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));
@@ -84,7 +83,7 @@ class CreateAuditLogServiceAdapterTest {
   @Test
   void log_WhenAuthorizationHeaderIsNull_ThenCreatedByIsUnknown() {
     when(httpServletRequest.getHeader(eq("Authorization"))).thenReturn(null);
-    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
+    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), "CHANGE_STATUS", "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));
@@ -95,7 +94,7 @@ class CreateAuditLogServiceAdapterTest {
   @Test
   void log_WhenUserAgentHeaderIsNull_ThenUserAgentByIsNull() {
     when(httpServletRequest.getHeader(eq("user-agent"))).thenReturn(null);
-    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), ChangeType.CHANGE_STATUS, "changed");
+    adapterUnderTest.log(AuditLogType.INFO, "id", "pid", new Object(), new Object(), new Object(), "CHANGE_STATUS", "changed");
 
     List<AuditJpaEntity> auditJpaEntityList = auditJpaRepository.findAll();
     assertThat(auditJpaEntityList.size(), is(1));

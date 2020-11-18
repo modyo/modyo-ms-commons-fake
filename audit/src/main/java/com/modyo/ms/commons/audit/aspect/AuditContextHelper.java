@@ -2,7 +2,6 @@ package com.modyo.ms.commons.audit.aspect;
 
 import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.aspect.AuditAspect.ErrorMessageDto;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import java.util.Arrays;
 import org.slf4j.Logger;
@@ -40,7 +39,7 @@ class AuditContextHelper {
   }
 
   private static void log(AuditLogType auditLogType, CreateAuditLogService createAuditLogService,
-      Object initValue, Object newValue, ChangeType changeType, String eventName) {
+      Object initValue, Object newValue, String changeType, String eventName) {
     try {
       createAuditLogService.log(
           auditLogType,

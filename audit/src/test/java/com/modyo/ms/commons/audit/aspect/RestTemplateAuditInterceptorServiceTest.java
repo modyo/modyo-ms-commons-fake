@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 
 import com.modyo.ms.commons.audit.AuditLogType;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
 import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
@@ -36,7 +35,7 @@ class RestTemplateAuditInterceptorServiceTest {
   @BeforeEach
   void setUp() {
     RequestContextHolder.setRequestAttributes(new InMemoryRequestAttributes());
-    AuditContext.setEventInfo(ChangeType.CHANGE_STATUS, "http request");
+    AuditContext.setEventInfo("CHANGE_STATUS", "http request");
   }
 
   @Test
@@ -51,7 +50,7 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq(ChangeType.CHANGE_STATUS), eq("http request")
+        eq("CHANGE_STATUS"), eq("http request")
     );
 
   }
@@ -70,7 +69,7 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq(ChangeType.CHANGE_STATUS), eq("http request")
+        eq("CHANGE_STATUS"), eq("http request")
     );
 
   }

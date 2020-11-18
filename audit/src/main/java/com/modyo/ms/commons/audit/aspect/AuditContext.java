@@ -1,7 +1,5 @@
 package com.modyo.ms.commons.audit.aspect;
 
-import com.modyo.ms.commons.audit.service.ChangeType;
-import java.util.Optional;
 import org.springframework.web.context.request.RequestContextHolder;
 
 public class AuditContext {
@@ -39,16 +37,13 @@ public class AuditContext {
     RequestContextHolder.currentRequestAttributes().setAttribute(NEW_VALUE, value, AUDIT_SCOPE);
   }
 
-  public static void setEventInfo(ChangeType changeType, String eventName) {
-    RequestContextHolder.currentRequestAttributes().setAttribute(CHANGE_TYPE, changeType.toString(), AUDIT_SCOPE);
+  public static void setEventInfo(String changeType, String eventName) {
+    RequestContextHolder.currentRequestAttributes().setAttribute(CHANGE_TYPE, changeType, AUDIT_SCOPE);
     RequestContextHolder.currentRequestAttributes().setAttribute(EVENT_NAME, eventName, AUDIT_SCOPE);
   }
 
-  static ChangeType getChangeType() {
-    String string = (String) RequestContextHolder.currentRequestAttributes().getAttribute(CHANGE_TYPE, AUDIT_SCOPE);
-    return Optional.ofNullable(string)
-        .map(ChangeType::valueOf)
-        .orElse(null);
+  static String getChangeType() {
+    return (String) RequestContextHolder.currentRequestAttributes().getAttribute(CHANGE_TYPE, AUDIT_SCOPE);
   }
 
   static String getEventName() {

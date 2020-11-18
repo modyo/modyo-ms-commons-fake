@@ -1,6 +1,5 @@
 package com.modyo.ms.commons.audit.aspect;
 
-import com.modyo.ms.commons.audit.service.ChangeType;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public @interface ModyoAudit {
 
-  ChangeType changeType();
+  String changeType();
   String event();
 
 }

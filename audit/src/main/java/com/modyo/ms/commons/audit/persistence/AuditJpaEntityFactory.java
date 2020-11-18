@@ -3,7 +3,6 @@ package com.modyo.ms.commons.audit.persistence;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modyo.ms.commons.audit.AuditLogType;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import java.util.Optional;
 
 class AuditJpaEntityFactory {
@@ -16,7 +15,7 @@ class AuditJpaEntityFactory {
       AuditLogType logLevel, String auditableId, String auditableParentId,
       Object parentValue, Object initialValue, Object newValue,
       String createdBy, String userAgent,
-      ChangeType changeType, String event) {
+      String changeType, String event) {
     AuditJpaEntity entity = new AuditJpaEntity();
     String parentId = Optional.ofNullable(auditableParentId).orElse(auditableId);
     Object calculatedParentValue = Optional.ofNullable(parentValue).orElse(initialValue);

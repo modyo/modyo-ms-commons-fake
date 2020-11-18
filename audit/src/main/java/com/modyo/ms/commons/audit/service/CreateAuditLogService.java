@@ -6,7 +6,7 @@ import com.modyo.ms.commons.audit.AuditLogType;
 public interface CreateAuditLogService {
 
   void log(AuditLogType logType, String auditableId, String auditableParentId, Object parentValue, Object initialValue, Object newValue,
-      ChangeType changeType, String event);
+      String changeType, String event);
 
 
 }

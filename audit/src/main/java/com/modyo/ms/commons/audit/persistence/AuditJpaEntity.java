@@ -1,7 +1,8 @@
 package com.modyo.ms.commons.audit.persistence;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import com.modyo.ms.commons.audit.AuditLogType;
-import com.modyo.ms.commons.audit.service.ChangeType;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,6 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "Audit")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class AuditJpaEntity {
 
   @Id
@@ -39,8 +42,7 @@ public class AuditJpaEntity {
   private String auditableParentType;
 
   @Column(name = "change_type")
-  @Enumerated(EnumType.STRING)
-  private ChangeType changeType;
+  private String changeType;
 
   @Column(name = "event")
   private String event;
@@ -56,6 +58,7 @@ public class AuditJpaEntity {
   private String newValue;
 
   @CreationTimestamp
+  @JsonSerialize(using = ZonedDateTimeSerializer.class)
   @Column(name = "created_at")
   private ZonedDateTime createdAt;
 
