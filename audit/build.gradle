@@ -1,5 +1,6 @@
 plugins {
-    id "io.spring.dependency-management" version "1.0.8.RELEASE"
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'jacoco'
     id 'maven-publish'
 }
 
@@ -10,11 +11,11 @@ apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
+apply from: 'gradle/jacoco.gradle'
 
 compileJava {
     sourceCompatibility = 11
     targetCompatibility = 11
-    options.encoding = 'UTF-8'
 }
 
 repositories {
@@ -33,14 +34,14 @@ repositories {
 publishing {
     publications {
         snapshot(MavenPublication) {
-            artifactId 'http'
+            artifactId 'audit'
             version project.version + '-SNAPSHOT'
             from components.java
         }
     }
     publications {
         release(MavenPublication) {
-            artifactId 'http'
+            artifactId 'audit'
             version project.version + '-RELEASE'
             from components.java
         }
@@ -59,18 +60,35 @@ publishing {
 
 dependencyManagement {
     imports {
-        mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE")
+        mavenBom('org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE')
     }
 }
 
 dependencies {
     implementation 'com.modyo.ms.commons:core:2.3.0-RELEASE'
+    implementation 'com.modyo.ms.commons:http:2.3.0-RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation "org.springframework.boot:spring-boot-configuration-processor"
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit' // excluding junit 4
+    }
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.4.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:2.23.0'
+    testImplementation 'com.tngtech.archunit:archunit:0.9.3'
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.4.2'
+    testImplementation 'com.h2database:h2'
+    testCompile group: 'org.junit.vintage', name: 'junit-vintage-engine'
+}
+
+test {
+    systemProperty 'file.encoding', 'utf-8'
+    useJUnitPlatform()
+    systemProperty 'de.adesso.junitinsights.enabled', 'true'
 }

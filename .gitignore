@@ -4,6 +4,7 @@
 core/build/
 http/build/
 aws-api-gw/build/
+audit/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
