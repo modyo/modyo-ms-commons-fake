@@ -1,6 +1,7 @@
 package com.modyo.ms.commons.audit.persistence;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import com.modyo.ms.commons.audit.AuditLogType;
@@ -34,6 +35,44 @@ class AuditJpaEntityFactoryTest {
     assertThat(auditJpaEntity.getLogType(), is(AuditLogType.INFO));
     assertThat(auditJpaEntity.getInitialValue(), is("{\"id\":\"before\"}"));
     assertThat(auditJpaEntity.getNewValue(), is("{\"id\":\"after\"}"));
+  }
+
+  @Test
+  void create_childEntityIsNull() {
+    AuditJpaEntity auditJpaEntity = AuditJpaEntityFactory.create(
+        AuditLogType.INFO,
+        "childId",
+        "parentId",
+        new ParentClass("parent"),
+        null,
+        new ChildClass("after"),
+        "Creator",
+        "User-Agent",
+        "CHANGE_STATUS",
+        "Changed status"
+    );
+
+    assertNull(auditJpaEntity.getAuditableType());
+    assertNull(auditJpaEntity.getInitialValue());
+  }
+
+  @Test
+  void create_childEntityIsAString() {
+    AuditJpaEntity auditJpaEntity = AuditJpaEntityFactory.create(
+        AuditLogType.INFO,
+        "childId",
+        "parentId",
+        new ParentClass("parent"),
+        "childValue",
+        new ChildClass("after"),
+        "Creator",
+        "User-Agent",
+        "CHANGE_STATUS",
+        "Changed status"
+    );
+
+    assertNull(auditJpaEntity.getAuditableType());
+    assertThat(auditJpaEntity.getInitialValue(), is("childValue"));
   }
 
   @Test

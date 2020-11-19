@@ -36,10 +36,19 @@ class AuditJpaEntityFactory {
   }
 
   private static String getClassName(Object entity) {
-    return entity.getClass().getSimpleName();
+    return Optional.ofNullable(entity)
+        .filter(e -> !(e instanceof String))
+        .map(Object::getClass)
+        .map(Class::getSimpleName)
+        .orElse(null);
   }
 
   private static String toJson(Object entity) {
+    if (entity == null) {
+      return null;
+    } else if (entity instanceof String) {
+      return entity.toString();
+    }
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       return objectMapper.writeValueAsString(entity);
