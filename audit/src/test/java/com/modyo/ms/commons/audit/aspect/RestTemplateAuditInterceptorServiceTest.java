@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 
 import com.modyo.ms.commons.audit.AuditLogType;
+import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
 import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
@@ -35,13 +36,13 @@ class RestTemplateAuditInterceptorServiceTest {
   @BeforeEach
   void setUp() {
     RequestContextHolder.setRequestAttributes(new InMemoryRequestAttributes());
-    AuditContext.setEventInfo("CHANGE_STATUS", "http request");
+    AuditSetContext.setEventInfo("", "CHANGE_STATUS", "http request");
   }
 
   @Test
   void logSuccess() {
-    AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
-    AuditContext.setNewValue(childEntityAfter);
+    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
 
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
@@ -57,8 +58,8 @@ class RestTemplateAuditInterceptorServiceTest {
 
   @Test
   void audit_WhenLogInfoFails_ThenDoNotThrowException() {
-    AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
-    AuditContext.setNewValue(childEntityAfter);
+    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
     doThrow(IllegalArgumentException.class).when(createAuditLogService)
         .log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
 
