@@ -58,7 +58,7 @@ class AuditAspectTest {
 
   @Test
   void audit_WhenJoinPointExecutes_ThenLogSuccess() throws Throwable {
-    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("", childEntityAfter);
     when(joinPoint.proceed()).thenReturn("", joinPointResponse);
 
@@ -81,7 +81,7 @@ class AuditAspectTest {
 
   @Test
   void audit_WhenJoinPointExecutes_ButLogSuccessFails_ThenDoNotThrowException() throws Throwable {
-    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("", childEntityAfter);
     when(joinPoint.proceed()).thenReturn(joinPointResponse);
     doThrow(IllegalArgumentException.class)
@@ -98,7 +98,7 @@ class AuditAspectTest {
 
   @Test
   void audit_WhenJoinPointThrowsException_ThenLogError() throws Throwable {
-    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     when(joinPoint.proceed()).thenThrow(new BusinessErrorException("business", null));
 
     assertThrows(BusinessErrorException.class, () -> aspectUnderTest.audit(joinPoint));
@@ -112,7 +112,7 @@ class AuditAspectTest {
 
   @Test
   void audit_WhenJoinPointThrowsException_ButLogErrorFails_ThenThrowOriginalException() throws Throwable {
-    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     when(joinPoint.proceed()).thenThrow(new BusinessErrorException("business", null));
     doThrow(IllegalArgumentException.class)
         .when(createAuditLogService).log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
@@ -129,7 +129,7 @@ class AuditAspectTest {
   @Test
   void audit_WhenPrefixSet_ThenSaveWithPrefix() throws Throwable {
     when(methodSignature.getMethod()).thenReturn(this.getClass().getMethod("testModyoAuditMethodWithPrefix"));
-    AuditSetContext.setInitialInfo("prefix", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setParentEntityAndInitialInfo("prefix", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("prefix", childEntityAfter);
     when(joinPoint.proceed()).thenReturn(joinPointResponse);
 

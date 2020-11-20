@@ -36,12 +36,30 @@ class RestTemplateAuditInterceptorServiceTest {
   @BeforeEach
   void setUp() {
     RequestContextHolder.setRequestAttributes(new InMemoryRequestAttributes());
-    AuditSetContext.setEventInfo("", "CHANGE_STATUS", "http request");
+    AuditSetContext.setEventInfo("", "CHANGE_STATUS", "GENERAL_EVENT");
   }
 
   @Test
-  void logSuccess() {
-    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+  void log_whenHttpEventExists_ThenSetThis() {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
+    AuditSetContext.setHttpEventInfo("HTTP_EVENT_NAME");
+
+    serviceUnderTest.intercept(
+        new RestTemplateRequestLogger(
+            null, null, new HttpHeaders(), null, Collections.emptyList()),
+        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
+    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+        eq(childEntityId), eq(parentEntityId), eq(parentEntity),
+        any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
+        eq("http_request"), eq("HTTP_EVENT_NAME")
+    );
+
+  }
+
+  @Test
+  void log_whenNoHttpEventExists_ThenSetGeneralEventName() {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("", childEntityAfter);
 
     serviceUnderTest.intercept(
@@ -51,14 +69,14 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq("CHANGE_STATUS"), eq("http request")
+        eq("http_request"), eq("GENERAL_EVENT")
     );
 
   }
 
   @Test
   void audit_WhenLogInfoFails_ThenDoNotThrowException() {
-    AuditSetContext.setInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("", childEntityAfter);
     doThrow(IllegalArgumentException.class).when(createAuditLogService)
         .log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
@@ -70,7 +88,7 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq("CHANGE_STATUS"), eq("http request")
+        eq("http_request"), eq("GENERAL_EVENT")
     );
 
   }

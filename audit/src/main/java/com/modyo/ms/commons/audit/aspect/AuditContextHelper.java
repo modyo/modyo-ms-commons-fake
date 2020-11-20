@@ -23,11 +23,12 @@ class AuditContextHelper {
     );
   }
 
-  public static void logInfo(String prefix, CreateAuditLogService createAuditLogService, Object initValue, Object newValue) {
+  public static void logInfo(String prefix, CreateAuditLogService createAuditLogService, Object initValue, Object newValue,
+      String changeType, String eventName) {
 
     log(AuditLogType.INFO, prefix, createAuditLogService,
         initValue, newValue,
-        AuditGetContext.getChangeType(prefix), AuditGetContext.getEventName(prefix)
+        changeType, eventName
     );
   }
 
@@ -41,6 +42,7 @@ class AuditContextHelper {
 
   private static void log(AuditLogType auditLogType, String prefix, CreateAuditLogService createAuditLogService,
       Object initValue, Object newValue, String changeType, String eventName) {
+
     try {
       createAuditLogService.log(
           auditLogType,

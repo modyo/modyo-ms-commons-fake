@@ -1,10 +1,13 @@
 package com.modyo.ms.commons.audit.aspect;
 
 import com.modyo.ms.commons.audit.aspect.context.AuditContext;
+import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
+import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.http.interceptors.RestTemplateInterceptorService;
 import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
 import com.modyo.ms.commons.http.loggers.RestTemplateResponseLogger;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +19,16 @@ class RestTemplateAuditInterceptorService implements RestTemplateInterceptorServ
 
   @Override
   public void intercept(RestTemplateRequestLogger requestLogger, RestTemplateResponseLogger responseLogger) {
-    AuditContextHelper.logInfo(AuditContext.CURRENT_PREFIX, createAuditLogService, requestLogger, responseLogger);
+
+    String eventName = Optional.ofNullable(AuditSetContext.resetHttpEventInfo())
+        .orElseGet(() -> AuditGetContext.getEventName(AuditContext.CURRENT_PREFIX));
+    AuditContextHelper.logInfo(
+        AuditContext.CURRENT_PREFIX,
+        createAuditLogService,
+        requestLogger,
+        responseLogger,
+        "http_request",
+        eventName
+        );
   }
 }

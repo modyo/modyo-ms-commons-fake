@@ -12,10 +12,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@Order(10)
 @RequiredArgsConstructor
 class AuditAspect {
 
@@ -23,7 +25,6 @@ class AuditAspect {
 
   @Around("@annotation(com.modyo.ms.commons.audit.aspect.ModyoAudit)")
   public Object audit(ProceedingJoinPoint joinPoint) throws Throwable {
-
     ModyoAudit modyoAudit = getModyoAudit(joinPoint);
     try {
       AuditSetContext.setEventInfo(modyoAudit.prefix(), modyoAudit.changeType(), modyoAudit.event());
