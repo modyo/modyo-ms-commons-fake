@@ -3,6 +3,7 @@ package com.modyo.ms.commons.audit.aspect.context;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.CHANGE_TYPE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.ENTITY_ID;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.EVENT_NAME;
+import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_REQUEST_CHANGE_TYPE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_REQUEST_EVENT;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.INITIAL_VALUE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.NEW_VALUE;
@@ -48,6 +49,16 @@ public class AuditSetContext {
   public static String resetHttpEventInfo() {
     String eventName = (String) getAttribute(null, HTTP_REQUEST_EVENT);
     setAttribute(null, HTTP_REQUEST_EVENT, null);
+    return eventName;
+  }
+
+  public static void setHttpChangeType(String changeType) {
+    setAttribute(null, HTTP_REQUEST_CHANGE_TYPE, changeType);
+  }
+
+  public static String resetHttpChangeType() {
+    String eventName = (String) getAttribute(null, HTTP_REQUEST_CHANGE_TYPE);
+    setAttribute(null, HTTP_REQUEST_CHANGE_TYPE, null);
     return eventName;
   }
 

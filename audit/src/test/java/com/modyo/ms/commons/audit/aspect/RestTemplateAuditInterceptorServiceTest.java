@@ -36,14 +36,15 @@ class RestTemplateAuditInterceptorServiceTest {
   @BeforeEach
   void setUp() {
     RequestContextHolder.setRequestAttributes(new InMemoryRequestAttributes());
-    AuditSetContext.setEventInfo("", "CHANGE_STATUS", "GENERAL_EVENT");
+    AuditSetContext.setEventInfo("", "GENERAL_CHANGE_TYPE", "GENERAL_EVENT");
   }
 
   @Test
-  void log_whenHttpEventExists_ThenSetThis() {
+  void log_whenHttpParamsExist_ThenSetThis() {
     AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("", childEntityAfter);
     AuditSetContext.setHttpEventInfo("HTTP_EVENT_NAME");
+    AuditSetContext.setHttpChangeType("HTTP_CHANGE_TYPE");
 
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
@@ -52,13 +53,13 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq("http_request"), eq("HTTP_EVENT_NAME")
+        eq("HTTP_CHANGE_TYPE"), eq("HTTP_EVENT_NAME")
     );
 
   }
 
   @Test
-  void log_whenNoHttpEventExists_ThenSetGeneralEventName() {
+  void log_whenNoHttpParamsExist_ThenSetGeneralEventName() {
     AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
     AuditSetContext.setNewValue("", childEntityAfter);
 

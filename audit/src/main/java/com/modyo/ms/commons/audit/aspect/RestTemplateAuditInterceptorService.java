@@ -22,12 +22,14 @@ class RestTemplateAuditInterceptorService implements RestTemplateInterceptorServ
 
     String eventName = Optional.ofNullable(AuditSetContext.resetHttpEventInfo())
         .orElseGet(() -> AuditGetContext.getEventName(AuditContext.CURRENT_PREFIX));
+    String changeType = Optional.ofNullable(AuditSetContext.resetHttpChangeType())
+        .orElse("http_request");
     AuditContextHelper.logInfo(
         AuditContext.CURRENT_PREFIX,
         createAuditLogService,
         requestLogger,
         responseLogger,
-        "http_request",
+        changeType,
         eventName
         );
   }
