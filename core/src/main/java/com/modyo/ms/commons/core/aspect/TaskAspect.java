@@ -2,7 +2,7 @@ package com.modyo.ms.commons.core.aspect;
 
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
 import com.modyo.ms.commons.core.loggers.TaskLogger;
-import java.util.UUID;
+import com.modyo.ms.commons.core.utils.CorrelationIdUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,7 +17,7 @@ public class TaskAspect {
   public Object logTasks(ProceedingJoinPoint joinPoint) throws Throwable {
     RequestContextHolder.setRequestAttributes(new InMemoryRequestAttributes());
     String taskName = joinPoint.getSignature().toShortString();
-    generateCorrelationId();
+    CorrelationIdUtils.generateCorrelationId();
     TaskLogger.start(taskName).logInfo();
     try {
       Object object = joinPoint.proceed();
@@ -28,11 +28,6 @@ public class TaskAspect {
       return null;
     }
 
-  }
-
-  private void generateCorrelationId() {
-    String correlationId = UUID.randomUUID().toString();
-    RequestContextHolder.getRequestAttributes().setAttribute("correlationId", correlationId, 0);
   }
 
 }
