@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public @interface ModyoAudit {
 
+  String prefix() default "";
   String changeType();
   String event();
 

@@ -2,6 +2,7 @@ package com.modyo.ms.commons.audit.aspect;
 
 import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.aspect.AuditAspect.ErrorMessageDto;
+import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import java.util.Arrays;
 import org.slf4j.Logger;
@@ -15,37 +16,39 @@ class AuditContextHelper {
 
   }
 
-  public static void logSuccess(CreateAuditLogService createAuditLogService, Object initValue, Object newValue) {
-    log(AuditLogType.SUCCESS, createAuditLogService,
+  public static void logSuccess(String prefix, CreateAuditLogService createAuditLogService, Object initValue, Object newValue) {
+    log(AuditLogType.SUCCESS, prefix, createAuditLogService,
         initValue, newValue,
-        AuditContext.getChangeType(), AuditContext.getEventName()
+        AuditGetContext.getChangeType(prefix), AuditGetContext.getEventName(prefix)
     );
   }
 
-  public static void logInfo(CreateAuditLogService createAuditLogService, Object initValue, Object newValue) {
+  public static void logInfo(String prefix, CreateAuditLogService createAuditLogService, Object initValue, Object newValue,
+      String changeType, String eventName) {
 
-    log(AuditLogType.INFO, createAuditLogService,
+    log(AuditLogType.INFO, prefix, createAuditLogService,
         initValue, newValue,
-        AuditContext.getChangeType(), AuditContext.getEventName()
+        changeType, eventName
     );
   }
 
-  public static void logError(CreateAuditLogService createAuditLogService, Exception exception) {
-    log(AuditLogType.ERROR, createAuditLogService,
-        AuditContext.getInitialValue(),
+  public static void logError(String prefix, CreateAuditLogService createAuditLogService, Exception exception) {
+    log(AuditLogType.ERROR, prefix, createAuditLogService,
+        AuditGetContext.getInitialValue(prefix),
         new ErrorMessageDto(exception.getClass().getName(), exception.getMessage(), Arrays.toString(exception.getStackTrace())),
-        AuditContext.getChangeType(), AuditContext.getEventName()
+        AuditGetContext.getChangeType(prefix), AuditGetContext.getEventName(prefix)
         );
   }
 
-  private static void log(AuditLogType auditLogType, CreateAuditLogService createAuditLogService,
+  private static void log(AuditLogType auditLogType, String prefix, CreateAuditLogService createAuditLogService,
       Object initValue, Object newValue, String changeType, String eventName) {
+
     try {
       createAuditLogService.log(
           auditLogType,
-          AuditContext.getChildEntityId(),
-          AuditContext.getParentEntityId(),
-          AuditContext.getParentEntity(),
+          AuditGetContext.getChildEntityId(prefix),
+          AuditGetContext.getParentEntityId(),
+          AuditGetContext.getParentEntity(),
           initValue,
           newValue,
           changeType,

@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 
 import com.modyo.ms.commons.audit.AuditLogType;
+import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
 import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
@@ -35,13 +36,15 @@ class RestTemplateAuditInterceptorServiceTest {
   @BeforeEach
   void setUp() {
     RequestContextHolder.setRequestAttributes(new InMemoryRequestAttributes());
-    AuditContext.setEventInfo("CHANGE_STATUS", "http request");
+    AuditSetContext.setEventInfo("", "GENERAL_CHANGE_TYPE", "GENERAL_EVENT");
   }
 
   @Test
-  void logSuccess() {
-    AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
-    AuditContext.setNewValue(childEntityAfter);
+  void log_whenHttpParamsExist_ThenSetThis() {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
+    AuditSetContext.setHttpEventInfo("HTTP_EVENT_NAME");
+    AuditSetContext.setHttpChangeType("HTTP_CHANGE_TYPE");
 
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
@@ -50,15 +53,32 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq("CHANGE_STATUS"), eq("http request")
+        eq("HTTP_CHANGE_TYPE"), eq("HTTP_EVENT_NAME")
+    );
+
+  }
+
+  @Test
+  void log_whenNoHttpParamsExist_ThenSetGeneralEventName() {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
+
+    serviceUnderTest.intercept(
+        new RestTemplateRequestLogger(
+            null, null, new HttpHeaders(), null, Collections.emptyList()),
+        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
+    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+        eq(childEntityId), eq(parentEntityId), eq(parentEntity),
+        any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
+        eq("http_request"), eq("GENERAL_EVENT")
     );
 
   }
 
   @Test
   void audit_WhenLogInfoFails_ThenDoNotThrowException() {
-    AuditContext.setInitialInfo(parentEntity, parentEntityId, childEntityBefore, childEntityId);
-    AuditContext.setNewValue(childEntityAfter);
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
     doThrow(IllegalArgumentException.class).when(createAuditLogService)
         .log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
 
@@ -69,7 +89,7 @@ class RestTemplateAuditInterceptorServiceTest {
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
-        eq("CHANGE_STATUS"), eq("http request")
+        eq("http_request"), eq("GENERAL_EVENT")
     );
 
   }

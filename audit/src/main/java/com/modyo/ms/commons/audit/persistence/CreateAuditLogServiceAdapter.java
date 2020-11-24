@@ -2,7 +2,6 @@ package com.modyo.ms.commons.audit.persistence;
 
 import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
-import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import com.modyo.ms.commons.core.utils.JwtToken;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +51,10 @@ class CreateAuditLogServiceAdapter implements CreateAuditLogService {
       return Optional.of(jwtToken)
           .map(this::getUserId)
           .orElse(defaultName);
-    } catch (CustomValidationException e) {
-      return defaultName;
+    } catch (IllegalStateException e) {
+      return "system";
+    } catch (Exception e) {
+      return "unknown";
     }
   }
 
@@ -64,6 +65,12 @@ class CreateAuditLogServiceAdapter implements CreateAuditLogService {
   }
 
   private String getUserAgent() {
-    return httpServletRequest.getHeader("user-agent");
+    try {
+      return httpServletRequest.getHeader("user-agent");
+    } catch (IllegalStateException e) {
+      return "system";
+    } catch (Exception e) {
+      return "unknown";
+    }
   }
 }

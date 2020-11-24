@@ -1,9 +1,10 @@
 package com.modyo.ms.commons.audit.aspect;
 
+import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
+import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.dtos.Dto;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@Order(10)
 @RequiredArgsConstructor
 class AuditAspect {
 
@@ -24,16 +25,19 @@ class AuditAspect {
 
   @Around("@annotation(com.modyo.ms.commons.audit.aspect.ModyoAudit)")
   public Object audit(ProceedingJoinPoint joinPoint) throws Throwable {
-
+    ModyoAudit modyoAudit = getModyoAudit(joinPoint);
     try {
-      ModyoAudit modyoAudit = getModyoAudit(joinPoint);
-      AuditContext.setEventInfo(modyoAudit.changeType(), modyoAudit.event());
+      AuditSetContext.setEventInfo(modyoAudit.prefix(), modyoAudit.changeType(), modyoAudit.event());
 
       Object result = joinPoint.proceed();
-      AuditContextHelper.logSuccess(createAuditLogService, AuditContext.getInitialValue(), AuditContext.getNewValue());
+      AuditContextHelper.logSuccess(
+          modyoAudit.prefix(),
+          createAuditLogService,
+          AuditGetContext.getInitialValue(modyoAudit.prefix()),
+          AuditGetContext.getNewValue(modyoAudit.prefix()));
       return result;
     } catch (Exception e) {
-      AuditContextHelper.logError(createAuditLogService, e);
+      AuditContextHelper.logError(modyoAudit.prefix(), createAuditLogService, e);
       throw e;
     }
 
