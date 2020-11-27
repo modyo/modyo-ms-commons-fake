@@ -44,6 +44,19 @@ public class AuditDbConfig {
     dataSource.setUsername(env.getProperty(PROPERTIES_PREFIX.concat(".username")));
     dataSource.setPassword(env.getProperty(PROPERTIES_PREFIX.concat(".password")));
 
+    Optional.ofNullable(env.getProperty(PROPERTIES_PREFIX.concat(".hikari.connectionTimeout")))
+        .map(Long::parseLong)
+        .ifPresent(dataSource::setConnectionTimeout);
+    Optional.ofNullable(env.getProperty(PROPERTIES_PREFIX.concat(".hikari.idleTimeout")))
+        .map(Long::parseLong)
+        .ifPresent(dataSource::setIdleTimeout);
+    Optional.ofNullable(env.getProperty(PROPERTIES_PREFIX.concat(".hikari.maxLifetime")))
+        .map(Long::parseLong)
+        .ifPresent(dataSource::setMaxLifetime);
+    Optional.ofNullable(env.getProperty(PROPERTIES_PREFIX.concat(".hikari.maximumPoolSize")))
+        .map(Integer::parseInt)
+        .ifPresent(dataSource::setMaximumPoolSize);
+
     return dataSource;
   }
 
