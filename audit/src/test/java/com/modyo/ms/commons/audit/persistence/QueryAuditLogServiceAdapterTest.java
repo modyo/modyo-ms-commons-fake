@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,9 +36,13 @@ class QueryAuditLogServiceAdapterTest {
   @Sql(scripts={"classpath:persistence/audits.sql"})
   void loadByParent() {
 
-    List<AuditJpaEntity> auditList = adapterUnderTest.loadByParent("10", "parent1");
+    List<AuditJpaEntity> auditList = adapterUnderTest.loadByParent("10", "parent1", PageRequest.of(0, 2));
 
-    assertThat(auditList.size(), is(3));
+    assertThat(auditList.size(), is(2));
+
+    auditList = adapterUnderTest.loadByParent("10", "parent1", PageRequest.of(1, 2));
+
+    assertThat(auditList.size(), is(1));
 
   }
 
