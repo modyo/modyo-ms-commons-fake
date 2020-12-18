@@ -1,10 +1,11 @@
 package com.modyo.ms.commons.audit.service;
 
 import com.modyo.ms.commons.audit.persistence.AuditJpaEntity;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface QueryAuditLogsService {
 
-  List<AuditJpaEntity> loadByParent(String parentId, String parentType);
+  Page<AuditJpaEntity> loadByParent(String parentId, String parentType, Pageable page);
 
 }
