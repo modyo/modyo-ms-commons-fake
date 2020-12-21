@@ -2,6 +2,8 @@ package com.modyo.ms.commons.audit.persistence;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.modyo.ms.commons.audit.AuditLogType;
 import java.util.Optional;
 
@@ -50,7 +52,9 @@ class AuditJpaEntityFactory {
       return entity.toString();
     }
     try {
-      ObjectMapper objectMapper = new ObjectMapper();
+      ObjectMapper objectMapper = new ObjectMapper()
+          .registerModule(new JavaTimeModule())
+          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
       return objectMapper.writeValueAsString(entity);
     } catch (JsonProcessingException e) {
       return "";
