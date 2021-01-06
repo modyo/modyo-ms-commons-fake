@@ -3,6 +3,8 @@ package com.modyo.ms.commons.audit.persistence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import com.modyo.ms.commons.audit.AuditLogType;
+import com.modyo.ms.commons.audit.service.QueryAuditLogsService.AuditQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +38,44 @@ class QueryAuditLogServiceAdapterTest {
   @Sql(scripts={"classpath:persistence/audits.sql"})
   void loadByParent() {
 
-    Page<AuditJpaEntity> auditList = adapterUnderTest.loadByParent("10", "parent1", PageRequest.of(0, 2));
+    Page<AuditJpaEntity> auditList = adapterUnderTest.loadByParent(
+        AuditQuery.builder("10", "parent1")
+            .build(),
+        PageRequest.of(0, 2));
 
     assertThat(auditList.getContent().size(), is(2));
     assertThat(auditList.getTotalElements(), is(3L));
     assertThat(auditList.getNumber(), is(0));
     assertThat(auditList.getTotalPages(), is(2));
 
-    auditList = adapterUnderTest.loadByParent("10", "parent1", PageRequest.of(1, 2));
+    auditList = adapterUnderTest.loadByParent( AuditQuery.builder("10", "parent1")
+        .build(),
+        PageRequest.of(1, 2));
 
     assertThat(auditList.getContent().size(), is(1));
     assertThat(auditList.getTotalElements(), is(3L));
     assertThat(auditList.getNumber(), is(1));
     assertThat(auditList.getTotalPages(), is(2));
+
+  }
+
+  @Test
+  @Sql(scripts={"classpath:persistence/audits.sql"})
+  void loadByAllParams() {
+
+    Page<AuditJpaEntity> auditList = adapterUnderTest.loadByParent(
+        AuditQuery.builder("10", "parent1")
+            .type("child1")
+            .changeType("CHANGE_STATUS")
+            .event("Changed")
+            .logType(AuditLogType.INFO)
+            .build(),
+        PageRequest.of(0, 2));
+
+    assertThat(auditList.getContent().size(), is(1));
+    assertThat(auditList.getTotalElements(), is(1L));
+    assertThat(auditList.getNumber(), is(0));
+    assertThat(auditList.getTotalPages(), is(1));
 
   }
 
