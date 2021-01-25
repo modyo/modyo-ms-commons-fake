@@ -24,6 +24,10 @@ class RestTemplateAuditInterceptorService implements RestTemplateInterceptorServ
         .orElseGet(() -> AuditGetContext.getEventName(AuditContext.CURRENT_PREFIX));
     String changeType = Optional.ofNullable(AuditSetContext.resetHttpChangeType())
         .orElse("http_request");
+
+    if(AuditSetContext.resetDisableNextHttpRequest()) {
+      return;
+    }
     AuditContextHelper.logInfo(
         AuditContext.CURRENT_PREFIX,
         createAuditLogService,

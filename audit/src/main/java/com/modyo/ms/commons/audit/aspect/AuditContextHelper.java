@@ -5,6 +5,7 @@ import com.modyo.ms.commons.audit.aspect.AuditAspect.ErrorMessageDto;
 import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import java.util.Arrays;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +45,17 @@ class AuditContextHelper {
       Object initValue, Object newValue, String changeType, String eventName) {
 
     try {
-      createAuditLogService.log(
-          auditLogType,
-          AuditGetContext.getChildEntityId(prefix),
-          AuditGetContext.getParentEntityId(),
-          AuditGetContext.getParentEntity(),
-          initValue,
-          newValue,
-          changeType,
-          eventName
+      Optional.ofNullable(AuditGetContext.getParentEntityId()).ifPresent(parentEntityId ->
+          createAuditLogService.log(
+              auditLogType,
+              AuditGetContext.getChildEntityId(prefix),
+              parentEntityId,
+              AuditGetContext.getParentEntity(),
+              initValue,
+              newValue,
+              changeType,
+              eventName
+          )
       );
     } catch (Exception e) {
       logger.error("Error in createAuditLogService.log: {}", e.getMessage());
