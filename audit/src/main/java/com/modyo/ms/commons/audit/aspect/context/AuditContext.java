@@ -9,6 +9,7 @@ public class AuditContext {
   static final String PARENT_ENTITY_ID = "audit_parent_entity_id";
   static final String INITIAL_VALUE = "audit_initial_value";
   static final String NEW_VALUE = "audit_new_value";
+  static final String DISABLE_NEXT_HTTP_REQUEST = "audit_disable_next_http_request";
   static final String ENTITY_ID = "audit_entity_id";
   static final String CHANGE_TYPE = "audit_change_type";
   static final String EVENT_NAME = "audit_event_name";

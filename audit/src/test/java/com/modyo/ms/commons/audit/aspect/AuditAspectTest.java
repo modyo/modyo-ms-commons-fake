@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.when;
 
 import com.modyo.ms.commons.audit.AuditLogType;
@@ -16,7 +17,6 @@ import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
 import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
-import java.util.Arrays;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,8 +68,21 @@ class AuditAspectTest {
         childEntityId, parentEntityId, parentEntity,
         childEntityBefore, childEntityAfter, "CHANGE_STATUS", "my event"
     );
+  }
 
-    System.out.println(Arrays.toString(RequestContextHolder.currentRequestAttributes().getAttributeNames(0)));
+  @Test
+  void audit_WhenParentEntityIdIsNull_ThenDoNotLog() throws Throwable {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, null, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
+    when(joinPoint.proceed()).thenReturn("", joinPointResponse);
+
+    aspectUnderTest.audit(joinPoint);
+
+    then(createAuditLogService).should(never()).log(any(),
+        any(), any(), any(),
+        any(), any(), any(), any()
+    );
+
     assertThat(RequestContextHolder.getRequestAttributes().getAttribute(
         "audit_entity_id", 0),
         is(childEntityId));

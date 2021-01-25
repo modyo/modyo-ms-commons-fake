@@ -1,6 +1,7 @@
 package com.modyo.ms.commons.audit.aspect.context;
 
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.CHANGE_TYPE;
+import static com.modyo.ms.commons.audit.aspect.context.AuditContext.DISABLE_NEXT_HTTP_REQUEST;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.ENTITY_ID;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.EVENT_NAME;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_REQUEST_CHANGE_TYPE;
@@ -37,6 +38,10 @@ public class AuditSetContext {
     setAttribute(prefix, NEW_VALUE, value);
   }
 
+  public static void disableNextHttpRequest() {
+    setAttribute(null, DISABLE_NEXT_HTTP_REQUEST, true);
+  }
+
   public static void setEventInfo(String prefix, String changeType, String eventName) {
     setAttribute(prefix, CHANGE_TYPE, changeType);
     setAttribute(prefix, EVENT_NAME, eventName);
@@ -60,6 +65,12 @@ public class AuditSetContext {
     String eventName = (String) getAttribute(null, HTTP_REQUEST_CHANGE_TYPE);
     setAttribute(null, HTTP_REQUEST_CHANGE_TYPE, null);
     return eventName;
+  }
+
+  public static boolean resetDisableNextHttpRequest() {
+    boolean isDisabled = AuditGetContext.isDisabledNextHttpRequest();
+    setAttribute(null, DISABLE_NEXT_HTTP_REQUEST, null);
+    return isDisabled;
   }
 
 }

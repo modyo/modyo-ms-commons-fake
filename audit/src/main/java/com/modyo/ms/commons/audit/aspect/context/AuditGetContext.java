@@ -1,6 +1,7 @@
 package com.modyo.ms.commons.audit.aspect.context;
 
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.CHANGE_TYPE;
+import static com.modyo.ms.commons.audit.aspect.context.AuditContext.DISABLE_NEXT_HTTP_REQUEST;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.ENTITY_ID;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.EVENT_NAME;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.INITIAL_VALUE;
@@ -8,6 +9,8 @@ import static com.modyo.ms.commons.audit.aspect.context.AuditContext.NEW_VALUE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.PARENT_ENTITY;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.PARENT_ENTITY_ID;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.getAttribute;
+
+import java.util.Optional;
 
 public class AuditGetContext {
 
@@ -41,6 +44,12 @@ public class AuditGetContext {
 
   public static String getChildEntityId(String prefix) {
     return (String) getAttribute(prefix, ENTITY_ID);
+  }
+
+  public static boolean isDisabledNextHttpRequest() {
+    return Optional.ofNullable(getAttribute(null, DISABLE_NEXT_HTTP_REQUEST))
+        .map(value -> (boolean) value)
+        .orElse(false);
   }
 
 }
