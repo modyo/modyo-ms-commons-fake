@@ -8,6 +8,9 @@ import com.modyo.ms.commons.http.constants.CustomHttpHeaders;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +27,8 @@ public class CorsProperties {
   @JsonIgnore
   private Boolean enableMockOptionMethods = false;
 
-  private List<String> allowOrigins = List.of("*");
+  @NotNull
+  private List<String> allowOrigins;
 
   private List<String> exposeHeaders = List.of(
       HttpHeaders.CONTENT_DISPOSITION,
@@ -53,6 +57,10 @@ public class CorsProperties {
       "X-Captcha-Response");
 
   private Boolean allowCredentials;
+
+  public void setAllowOrigins(String[] allowOriginArray) {
+    this.allowOrigins = Stream.of(allowOriginArray).collect(Collectors.toList());
+  }
 
   @JsonIgnore
   public Map<String, Object> getCorsResponseParameters() {
