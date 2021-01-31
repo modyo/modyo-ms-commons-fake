@@ -9,6 +9,7 @@ import com.modyo.ms.commons.http.loggers.RestTemplateRequestLogger;
 import com.modyo.ms.commons.http.loggers.RestTemplateResponseLogger;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,11 +29,18 @@ class RestTemplateAuditInterceptorService implements RestTemplateInterceptorServ
     if(AuditSetContext.resetDisableNextHttpRequest()) {
       return;
     }
+
+    boolean logRequestAndResponse = AuditSetContext.resetLogRequestAndResponseAlways() ||
+        Optional.ofNullable(responseLogger)
+            .map(RestTemplateResponseLogger::getStatus)
+            .map(HttpStatus::valueOf)
+            .map(httpStatus -> !httpStatus.is2xxSuccessful())
+            .orElse(true);
     AuditContextHelper.logInfo(
         AuditContext.CURRENT_PREFIX,
         createAuditLogService,
-        requestLogger,
-        responseLogger,
+        logRequestAndResponse ? requestLogger : null,
+        logRequestAndResponse ? responseLogger : null,
         changeType,
         eventName
         );

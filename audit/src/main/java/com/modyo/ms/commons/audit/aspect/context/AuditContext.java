@@ -15,6 +15,7 @@ public class AuditContext {
   static final String EVENT_NAME = "audit_event_name";
   static final String HTTP_REQUEST_EVENT = "audit_http_request_event_name";
   static final String HTTP_REQUEST_CHANGE_TYPE = "audit_http_request_change_type";
+  static final String HTTP_LOG_REQUEST_AND_RESPONSE_ALWAYS = "audit_http_log_request_response_always";
 
   private static final Integer AUDIT_SCOPE = 0;
   public static final String CURRENT_PREFIX = "current";

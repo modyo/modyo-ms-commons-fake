@@ -4,6 +4,7 @@ import static com.modyo.ms.commons.audit.aspect.context.AuditContext.CHANGE_TYPE
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.DISABLE_NEXT_HTTP_REQUEST;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.ENTITY_ID;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.EVENT_NAME;
+import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_LOG_REQUEST_AND_RESPONSE_ALWAYS;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.INITIAL_VALUE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.NEW_VALUE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.PARENT_ENTITY;
@@ -48,6 +49,12 @@ public class AuditGetContext {
 
   public static boolean isDisabledNextHttpRequest() {
     return Optional.ofNullable(getAttribute(null, DISABLE_NEXT_HTTP_REQUEST))
+        .map(value -> (boolean) value)
+        .orElse(false);
+  }
+
+  public static boolean isLogRequestAndResponseAlways() {
+    return Optional.ofNullable(getAttribute(null, HTTP_LOG_REQUEST_AND_RESPONSE_ALWAYS))
         .map(value -> (boolean) value)
         .orElse(false);
   }
