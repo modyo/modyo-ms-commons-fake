@@ -10,6 +10,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 
 import com.modyo.ms.commons.audit.AuditLogType;
+import com.modyo.ms.commons.audit.aspect.RestTemplateAuditInterceptorService.AuditResponseDto;
 import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
 import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
@@ -57,7 +58,7 @@ class RestTemplateAuditInterceptorServiceTest {
         new RestTemplateResponseLogger(HttpStatus.CREATED.value(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
-        isNull(), isNull(),
+        isNull(), any(AuditResponseDto.class),
         eq("HTTP_CHANGE_TYPE"), eq("HTTP_EVENT_NAME")
     );
 
