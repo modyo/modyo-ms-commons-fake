@@ -2,6 +2,7 @@ package com.modyo.ms.commons.awsapigw.config;
 
 import com.modyo.ms.commons.awsapigw.config.properties.ApiGwSwaggerProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextListener;
@@ -16,12 +17,13 @@ public class WebConfig implements WebMvcConfigurer {
 
   private final ApiGwSwaggerProperties apiGwSwaggerProperties;
 
+  @Value("${commons.aws-api-gw.swagger.x-amazon-apigateway-cors.allow-origins}")
+  private String[] allowOrigins;
+
   @Override
   public void addCorsMappings(CorsRegistry registry) {
-    String[] allowedOriginsArray = apiGwSwaggerProperties.getXAmazonApigatewayCors().getAllowOrigins()
-        .toArray(new String[0]);
     registry.addMapping("/**")
-        .allowedOrigins(allowedOriginsArray);
+        .allowedOrigins(allowOrigins);
   }
 
   @Bean

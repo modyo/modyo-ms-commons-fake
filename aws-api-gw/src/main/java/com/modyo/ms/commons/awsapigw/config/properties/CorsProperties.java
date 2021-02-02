@@ -1,5 +1,6 @@
 package com.modyo.ms.commons.awsapigw.config.properties;
 
+import static com.modyo.ms.commons.awsapigw.constants.AwsExtensionsPrefixes.I_RESP_H_PREFIX;
 import static com.modyo.ms.commons.awsapigw.constants.AwsExtensionsPrefixes.M_RESP_H_PREFIX;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,9 +27,6 @@ public class CorsProperties {
 
   @JsonIgnore
   private Boolean enableMockOptionMethods = false;
-
-  @NotNull
-  private List<String> allowOrigins;
 
   private List<String> exposeHeaders = List.of(
       HttpHeaders.CONTENT_DISPOSITION,
@@ -58,30 +56,24 @@ public class CorsProperties {
 
   private Boolean allowCredentials;
 
-  public void setAllowOrigins(String[] allowOriginArray) {
-    this.allowOrigins = Stream.of(allowOriginArray).collect(Collectors.toList());
-  }
-
   @JsonIgnore
   public Map<String, Object> getCorsResponseParameters() {
     Map<String, Object> responseParameters =  new HashMap<>();
+    /*
+    responseParameters.put(
+        M_RESP_H_PREFIX + HttpHeaders.ORIGIN,
+        I_RESP_H_PREFIX + HttpHeaders.ORIGIN
+    );
+
+     */
     responseParameters.put(
         M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
-        "'" + String.join(",", getAllowOrigins()) + "'");
-//    responseParameters.put(
-//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
-//        "'" + String.join(",", getAllowMethods()) + "'");
-//    responseParameters.put(
-//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_MAX_AGE,
-//        "'" + getMaxAge() + "'");
+        I_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN
+    );
+
     responseParameters.put(
         M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
         "'" + String.join(",", getExposeHeaders()) + "'");
-//    if (allowCredentials != null && allowCredentials) {
-//      responseParameters.put(
-//          M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
-//          "'" + getAllowCredentials() + "'");
-//    }
     return responseParameters;
   }
 
