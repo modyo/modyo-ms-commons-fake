@@ -84,7 +84,7 @@ public class OptionsMockOperationBuilder {
         "responseParameters",
         Map.of(
             M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
-            "'" + String.join(",", swaggerProperties.getXAmazonApigatewayCors().getAllowOrigins()) + "'",
+            "'*'",
             M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
             "'" + String.join(",", swaggerProperties.getXAmazonApigatewayCors().getAllowHeaders()) + "'",
             M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,

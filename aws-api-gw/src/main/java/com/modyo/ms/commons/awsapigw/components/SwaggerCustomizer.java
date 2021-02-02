@@ -16,6 +16,7 @@ import io.swagger.models.Operation;
 import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.auth.SecuritySchemeDefinition;
+import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.properties.StringProperty;
 import java.util.HashMap;
 import java.util.List;
@@ -176,11 +177,21 @@ public class SwaggerCustomizer {
   }
 
   private Map<String, Object> buildRequestParameters(Operation operation) {
+    operation.getParameters().add(originHeader());
     return operation.getParameters().stream()
         .filter(parameter -> !parameter.getIn().equals("body"))
         .collect(Collectors.toMap(
             parameter -> I_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName(),
             parameter -> M_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName()));
+  }
+
+  private HeaderParameter originHeader() {
+    HeaderParameter headerParameter = new HeaderParameter();
+    headerParameter.setType("string");
+    headerParameter.setIn("header");
+    headerParameter.setName("Origin");
+    headerParameter.setDescription("Origin");
+    return headerParameter;
   }
 
   private String getParamType(String in) {

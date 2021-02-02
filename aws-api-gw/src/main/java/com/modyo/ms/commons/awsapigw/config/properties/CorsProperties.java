@@ -1,5 +1,6 @@
 package com.modyo.ms.commons.awsapigw.config.properties;
 
+import static com.modyo.ms.commons.awsapigw.constants.AwsExtensionsPrefixes.I_RESP_H_PREFIX;
 import static com.modyo.ms.commons.awsapigw.constants.AwsExtensionsPrefixes.M_RESP_H_PREFIX;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -8,6 +9,9 @@ import com.modyo.ms.commons.http.constants.CustomHttpHeaders;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpHeaders;
@@ -23,8 +27,6 @@ public class CorsProperties {
 
   @JsonIgnore
   private Boolean enableMockOptionMethods = false;
-
-  private List<String> allowOrigins = List.of("*");
 
   private List<String> exposeHeaders = List.of(
       HttpHeaders.CONTENT_DISPOSITION,
@@ -57,23 +59,21 @@ public class CorsProperties {
   @JsonIgnore
   public Map<String, Object> getCorsResponseParameters() {
     Map<String, Object> responseParameters =  new HashMap<>();
+    /*
+    responseParameters.put(
+        M_RESP_H_PREFIX + HttpHeaders.ORIGIN,
+        I_RESP_H_PREFIX + HttpHeaders.ORIGIN
+    );
+
+     */
     responseParameters.put(
         M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,
-        "'" + String.join(",", getAllowOrigins()) + "'");
-//    responseParameters.put(
-//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS,
-//        "'" + String.join(",", getAllowMethods()) + "'");
-//    responseParameters.put(
-//        M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_MAX_AGE,
-//        "'" + getMaxAge() + "'");
+        I_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN
+    );
+
     responseParameters.put(
         M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
         "'" + String.join(",", getExposeHeaders()) + "'");
-//    if (allowCredentials != null && allowCredentials) {
-//      responseParameters.put(
-//          M_RESP_H_PREFIX + HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS,
-//          "'" + getAllowCredentials() + "'");
-//    }
     return responseParameters;
   }
 
