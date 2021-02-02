@@ -4,11 +4,13 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 
 import com.modyo.ms.commons.audit.AuditLogType;
+import com.modyo.ms.commons.audit.aspect.RestTemplateAuditInterceptorService.AuditResponseDto;
 import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
 import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 
 class RestTemplateAuditInterceptorServiceTest {
@@ -52,7 +55,46 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(HttpStatus.CREATED.value(), new HttpHeaders(), null, null));
+    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+        eq(childEntityId), eq(parentEntityId), eq(parentEntity),
+        isNull(), any(AuditResponseDto.class),
+        eq("HTTP_CHANGE_TYPE"), eq("HTTP_EVENT_NAME")
+    );
+
+  }
+
+  @Test
+  void log_whenResponseIsError_ThenLogRequestAndResponse() {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
+    AuditSetContext.setHttpEventInfo("HTTP_EVENT_NAME");
+    AuditSetContext.setHttpChangeType("HTTP_CHANGE_TYPE");
+
+    serviceUnderTest.intercept(
+        new RestTemplateRequestLogger(
+            null, null, new HttpHeaders(), null, Collections.emptyList()),
+        new RestTemplateResponseLogger(HttpStatus.BAD_REQUEST.value(), new HttpHeaders(), null, null));
+    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+        eq(childEntityId), eq(parentEntityId), eq(parentEntity),
+        any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
+        eq("HTTP_CHANGE_TYPE"), eq("HTTP_EVENT_NAME")
+    );
+
+  }
+
+  @Test
+  void log_whenOptionLogRequestAlwaysIsSet_ThenLogRequestAndResponse() {
+    AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
+    AuditSetContext.setNewValue("", childEntityAfter);
+    AuditSetContext.setHttpEventInfo("HTTP_EVENT_NAME");
+    AuditSetContext.setHttpChangeType("HTTP_CHANGE_TYPE");
+    AuditSetContext.enableHttpLogRequestAndResponseAlways();
+
+    serviceUnderTest.intercept(
+        new RestTemplateRequestLogger(
+            null, null, new HttpHeaders(), null, Collections.emptyList()),
+        new RestTemplateResponseLogger(HttpStatus.OK.value(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),

@@ -4,6 +4,7 @@ import static com.modyo.ms.commons.audit.aspect.context.AuditContext.CHANGE_TYPE
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.DISABLE_NEXT_HTTP_REQUEST;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.ENTITY_ID;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.EVENT_NAME;
+import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_LOG_REQUEST_AND_RESPONSE_ALWAYS;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_REQUEST_CHANGE_TYPE;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.HTTP_REQUEST_EVENT;
 import static com.modyo.ms.commons.audit.aspect.context.AuditContext.INITIAL_VALUE;
@@ -65,6 +66,16 @@ public class AuditSetContext {
     String eventName = (String) getAttribute(null, HTTP_REQUEST_CHANGE_TYPE);
     setAttribute(null, HTTP_REQUEST_CHANGE_TYPE, null);
     return eventName;
+  }
+
+  public static void enableHttpLogRequestAndResponseAlways() {
+    setAttribute(null, HTTP_LOG_REQUEST_AND_RESPONSE_ALWAYS, true);
+  }
+
+  public static boolean resetLogRequestAndResponseAlways() {
+    boolean isEnabled = AuditGetContext.isLogRequestAndResponseAlways();
+    setAttribute(null, HTTP_LOG_REQUEST_AND_RESPONSE_ALWAYS, null);
+    return isEnabled;
   }
 
   public static boolean resetDisableNextHttpRequest() {
