@@ -1,6 +1,7 @@
 package com.modyo.ms.commons.awsapigw.config;
 
 import com.modyo.ms.commons.awsapigw.config.properties.ApiGwSwaggerProperties;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,11 +24,20 @@ public class WebConfig implements WebMvcConfigurer {
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**")
-        .allowedOrigins(allowOrigins);
+        .allowedOrigins(allowOrigins)
+        .allowedMethods(listToArray(apiGwSwaggerProperties.getXAmazonApigatewayCors().getAllowMethods()))
+        .allowedHeaders(listToArray(apiGwSwaggerProperties.getXAmazonApigatewayCors().getAllowHeaders()))
+        ;
   }
+
+
 
   @Bean
   public RequestContextListener requestContextListener() {
     return new RequestContextListener();
+  }
+
+  private String[] listToArray(List<String> list) {
+    return list.toArray(new String[0]);
   }
 }
