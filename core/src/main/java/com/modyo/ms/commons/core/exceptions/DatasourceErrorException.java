@@ -9,10 +9,16 @@ import lombok.Setter;
 public abstract class DatasourceErrorException extends RuntimeException {
 
   private static final long serialVersionUID = 8283697959497165526L;
+  private String messageCode;
   private Dto dataSourceResult;
 
   public DatasourceErrorException(String message) {
     super(message);
+  }
+
+  public DatasourceErrorException(String message, String messageCode) {
+    super(message);
+    this.setMessageCode(messageCode);
   }
 
   public DatasourceErrorException(String message, Throwable cause) {

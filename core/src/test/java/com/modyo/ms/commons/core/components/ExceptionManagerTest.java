@@ -2,6 +2,7 @@ package com.modyo.ms.commons.core.components;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import com.modyo.ms.commons.core.InMemoryTestRequestAttributes;
@@ -9,8 +10,10 @@ import com.modyo.ms.commons.core.constants.ErrorCodes;
 import com.modyo.ms.commons.core.dtos.ErrorsResponseDto;
 import com.modyo.ms.commons.core.dtos.RejectionDto;
 import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
+import com.modyo.ms.commons.core.exceptions.CriticalBusinessErrorException;
 import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import com.modyo.ms.commons.core.exceptions.ForbiddenException;
+import com.modyo.ms.commons.core.exceptions.NotFoundException;
 import com.modyo.ms.commons.core.exceptions.TechnicalErrorException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
@@ -60,12 +63,36 @@ public class ExceptionManagerTest {
   @Test
   public void givenBusinessErrorException_ThenReturn200_1010() {
     ResponseEntity<ErrorsResponseDto> responseEntity = managerUnderTest.handleException(
-        new BusinessErrorException("business error", null));
+        new BusinessErrorException("business error", "001"));
 
     assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
     assertNotNull(responseEntity.getBody().getErrors());
     assertThat(responseEntity.getBody().getErrors().size(), is(1));
-    assertThat(responseEntity.getBody().getErrors().get(0).getCode(), is(ErrorCodes.NEGOCIO.getCode()));
+    assertThat(responseEntity.getBody().getErrors().get(0).getCode(), is(ErrorCodes.BUSINESS_ERROR.getCode()));
+    assertThat(responseEntity.getBody().getErrors().get(0).getMessageCode(), is("001"));
+  }
+
+  @Test
+  public void givenCriticalBusinessErrorException_ThenReturn200_1010() {
+    ResponseEntity<ErrorsResponseDto> responseEntity = managerUnderTest.handleException(
+        new CriticalBusinessErrorException("business error", "001"));
+
+    assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+    assertNotNull(responseEntity.getBody().getErrors());
+    assertThat(responseEntity.getBody().getErrors().size(), is(1));
+    assertThat(responseEntity.getBody().getErrors().get(0).getCode(), is(ErrorCodes.CRITICAL_BUSINESS_ERROR.getCode()));
+    assertThat(responseEntity.getBody().getErrors().get(0).getMessageCode(), is("001"));
+  }
+
+  @Test
+  public void givenNotFoundException_ThenReturn404() {
+    ResponseEntity<ErrorsResponseDto> responseEntity = managerUnderTest.handleException(
+        new NotFoundException());
+
+    assertThat(responseEntity.getStatusCode(), is(HttpStatus.NOT_FOUND));
+    assertNotNull(responseEntity.getBody().getErrors());
+    assertThat(responseEntity.getBody().getErrors().size(), is(1));
+    assertThat(responseEntity.getBody().getErrors().get(0).getCode(), is(ErrorCodes.RESOURCE_NOT_FOUND.getCode()));
   }
 
   @Test

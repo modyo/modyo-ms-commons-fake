@@ -15,6 +15,16 @@ public class TechnicalErrorException extends DatasourceErrorException {
     super(message, cause);
   }
 
+  public TechnicalErrorException(String message, String messageCode) {
+    super(message);
+    this.setMessageCode(messageCode);
+  }
+
+  public TechnicalErrorException(String message, String messageCode, Throwable cause) {
+    super(message, cause);
+    this.setMessageCode(messageCode);
+  }
+
   public TechnicalErrorException(String message, Dto dataSourceResult) {
     super(message);
     this.setDataSourceResult(dataSourceResult);

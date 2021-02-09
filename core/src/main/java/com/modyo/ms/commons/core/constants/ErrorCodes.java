@@ -26,6 +26,7 @@ public enum ErrorCodes {
   ACCESS_FORBIDDEN("1012", "Access forbidden"),
   TECHNICAL_ERROR("1013", "Technical error"),
   RESOURCE_NOT_FOUND("1014", "Resource not found"),
+  CRITICAL_BUSINESS_ERROR("1015", "Critical Business error"),
   @Deprecated INTERNO("1000", "Ha ocurrido un error interno"),
   @Deprecated PARAMETRO_NO_VALIDO("1001", "Parámetro inválido"),
   @Deprecated METODO_NO_SOPORTADO("1002", "Metodo no soportado"),
