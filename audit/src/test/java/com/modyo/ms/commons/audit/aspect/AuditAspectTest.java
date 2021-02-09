@@ -16,7 +16,6 @@ import com.modyo.ms.commons.audit.aspect.AuditAspect.ErrorMessageDto;
 import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
 import com.modyo.ms.commons.audit.service.CreateAuditLogService;
 import com.modyo.ms.commons.core.components.InMemoryRequestAttributes;
-import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,9 +111,9 @@ class AuditAspectTest {
   @Test
   void audit_WhenJoinPointThrowsException_ThenLogError() throws Throwable {
     AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
-    when(joinPoint.proceed()).thenThrow(new BusinessErrorException("business", null));
+    when(joinPoint.proceed()).thenThrow(new RuntimeException());
 
-    assertThrows(BusinessErrorException.class, () -> aspectUnderTest.audit(joinPoint));
+    assertThrows(RuntimeException.class, () -> aspectUnderTest.audit(joinPoint));
 
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
@@ -126,11 +125,11 @@ class AuditAspectTest {
   @Test
   void audit_WhenJoinPointThrowsException_ButLogErrorFails_ThenThrowOriginalException() throws Throwable {
     AuditSetContext.setParentEntityAndInitialInfo("", parentEntity, parentEntityId, childEntityBefore, childEntityId);
-    when(joinPoint.proceed()).thenThrow(new BusinessErrorException("business", null));
+    when(joinPoint.proceed()).thenThrow(new RuntimeException());
     doThrow(IllegalArgumentException.class)
         .when(createAuditLogService).log(any(), anyString(), anyString(), any(), any(), any(), any(), anyString());
 
-    assertThrows(BusinessErrorException.class, () -> aspectUnderTest.audit(joinPoint));
+    assertThrows(RuntimeException.class, () -> aspectUnderTest.audit(joinPoint));
 
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
