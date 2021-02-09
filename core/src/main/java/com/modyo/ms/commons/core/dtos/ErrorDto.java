@@ -38,6 +38,11 @@ public class ErrorDto extends Dto {
   private String title;
 
   /**
+   * Código de mensaje que identifica el mensaje de error
+   */
+  private String messageCode;
+
+  /**
    * Objeto que contiene referencias de la fuente del error
    */
   private String source;

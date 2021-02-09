@@ -5,6 +5,7 @@ import com.modyo.ms.commons.core.dtos.ErrorDto;
 import com.modyo.ms.commons.core.dtos.ErrorsResponseDto;
 import com.modyo.ms.commons.core.dtos.RejectionDto;
 import com.modyo.ms.commons.core.exceptions.BusinessErrorException;
+import com.modyo.ms.commons.core.exceptions.CriticalBusinessErrorException;
 import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import com.modyo.ms.commons.core.exceptions.ForbiddenException;
 import com.modyo.ms.commons.core.exceptions.NotFoundException;
@@ -58,7 +59,16 @@ public class ExceptionManager {
   @ExceptionHandler(BusinessErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(BusinessErrorException e) {
-    return logAndGetResponseEntity(HttpStatus.OK, ErrorCodes.BUSINESS_ERROR, e);
+    return logAndGetResponseEntity(HttpStatus.OK, ErrorCodes.BUSINESS_ERROR, e, e.getMessageCode());
+  }
+
+  /**
+   * When the business logic throws a critiacl business exception
+   */
+  @ExceptionHandler(CriticalBusinessErrorException.class)
+  @Order(Ordered.HIGHEST_PRECEDENCE)
+  public ResponseEntity<ErrorsResponseDto> handleException(CriticalBusinessErrorException e) {
+    return logAndGetResponseEntity(HttpStatus.OK, ErrorCodes.CRITICAL_BUSINESS_ERROR, e, e.getMessageCode());
   }
 
   /**
@@ -210,17 +220,26 @@ public class ExceptionManager {
   @ExceptionHandler(TechnicalErrorException.class)
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public ResponseEntity<ErrorsResponseDto> handleException(TechnicalErrorException e) {
-    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECHNICAL_ERROR, e);
+    return logAndGetResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.TECHNICAL_ERROR, e, e.getMessageCode());
   }
 
   private ResponseEntity<ErrorsResponseDto> logAndGetResponseEntity(
       HttpStatus httpStatus,
       ErrorCodes errorCode,
       Exception e) {
+    return logAndGetResponseEntity(httpStatus, errorCode, e, null);
+  }
+
+  private ResponseEntity<ErrorsResponseDto> logAndGetResponseEntity(
+      HttpStatus httpStatus,
+      ErrorCodes errorCode,
+      Exception e,
+      String messageCode) {
     ErrorsResponseDto response = ErrorsResponseDto.builder()
         .error(ErrorDto.builder()
             .status(Integer.toString(httpStatus.value()))
             .code(errorCode.getCode())
+            .messageCode(messageCode)
             .title(errorCode.getMessage())
             .detail(e.getMessage())
             .build())
