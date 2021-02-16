@@ -41,7 +41,7 @@ class AuditContextHelper {
         );
   }
 
-  private static void log(AuditLogType auditLogType, String prefix, CreateAuditLogService createAuditLogService,
+  public static void log(AuditLogType auditLogType, String prefix, CreateAuditLogService createAuditLogService,
       Object initValue, Object newValue, String changeType, String eventName) {
 
     try {

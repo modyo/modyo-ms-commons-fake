@@ -75,7 +75,7 @@ class RestTemplateAuditInterceptorServiceTest {
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
         new RestTemplateResponseLogger(HttpStatus.BAD_REQUEST.value(), new HttpHeaders(), null, null));
-    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+    then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
         eq("HTTP_CHANGE_TYPE"), eq("HTTP_EVENT_NAME")
@@ -112,7 +112,7 @@ class RestTemplateAuditInterceptorServiceTest {
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
         new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
-    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+    then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
         eq("http_request"), eq("GENERAL_EVENT")
@@ -167,8 +167,8 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
-    then(createAuditLogService).should().log(eq(AuditLogType.INFO),
+        new RestTemplateResponseLogger(HttpStatus.REQUEST_TIMEOUT.value(), new HttpHeaders(), null, null));
+    then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
         eq("http_request"), eq("GENERAL_EVENT")
