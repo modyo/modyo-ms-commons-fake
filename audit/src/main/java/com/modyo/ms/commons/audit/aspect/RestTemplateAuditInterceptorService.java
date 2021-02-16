@@ -1,5 +1,6 @@
 package com.modyo.ms.commons.audit.aspect;
 
+import com.modyo.ms.commons.audit.AuditLogType;
 import com.modyo.ms.commons.audit.aspect.context.AuditContext;
 import com.modyo.ms.commons.audit.aspect.context.AuditGetContext;
 import com.modyo.ms.commons.audit.aspect.context.AuditSetContext;
@@ -37,9 +38,12 @@ class RestTemplateAuditInterceptorService implements RestTemplateInterceptorServ
         .map(RestTemplateResponseLogger::getStatus)
         .map(HttpStatus::valueOf)
         .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+    boolean isHttpError = !httpStatus.is2xxSuccessful();
+
     boolean logRequestAndResponse = AuditSetContext.resetLogRequestAndResponseAlways() ||
-        !httpStatus.is2xxSuccessful();
-    AuditContextHelper.logInfo(
+        isHttpError;
+    AuditContextHelper.log(
+        isHttpError ? AuditLogType.ERROR : AuditLogType.INFO,
         AuditContext.CURRENT_PREFIX,
         createAuditLogService,
         logRequestAndResponse ? requestLogger : null,
