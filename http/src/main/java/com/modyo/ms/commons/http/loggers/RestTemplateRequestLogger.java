@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.modyo.ms.commons.core.constants.LogTypes;
 import com.modyo.ms.commons.core.loggers.CommonsLogger;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,11 +21,15 @@ public class RestTemplateRequestLogger extends CommonsLogger {
 
   @JsonIgnore
   private List<String> headersToObfuscate;
+  @JsonIgnore
+  private List<String> bodyParamsToObfuscate;
 
   private String method;
   private String uri;
   private HttpHeaders headers;
   private String body;
+
+  private static final String BODY_PARAMS_OBFUSCATE_HEADER_KEY = "ObfuscateBodyParams";
 
   public RestTemplateRequestLogger(
       String method,
@@ -32,13 +38,15 @@ public class RestTemplateRequestLogger extends CommonsLogger {
       String body,
       List<String> headersToObfuscate) {
     super();
-    this.headersToObfuscate = headersToObfuscate.stream()
+    this.headersToObfuscate = Optional.ofNullable(headersToObfuscate).orElse(Collections.emptyList()).stream()
         .map(String::toLowerCase)
         .collect(Collectors.toList());
+    this.bodyParamsToObfuscate = Optional.ofNullable(headers.get(BODY_PARAMS_OBFUSCATE_HEADER_KEY)).orElse(Collections.emptyList());
     this.method = method;
     this.uri = uri;
     this.headers = getObfuscatedRequestHeaders(headers);
-    this.body = body;
+    this.body = ObfuscateBodyParamsService.obfuscate(body, bodyParamsToObfuscate);
+
   }
 
   @Override
@@ -61,7 +69,7 @@ public class RestTemplateRequestLogger extends CommonsLogger {
       List<String> headersNamesList) {
     return values.stream()
         .map(value -> headersNamesList.contains(name.toLowerCase())
-            ? "*********"
+            ? ObfuscateBodyParamsService.OBFUSCATED_VALUE
             : value
         )
         .collect(Collectors.toList());
