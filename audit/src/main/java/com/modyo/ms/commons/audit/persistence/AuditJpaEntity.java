@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +19,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
-@Table(name = "Audit")
+@Table(name = "Audit", indexes = {
+    @Index(name = "index_by_parent", columnList = "auditable_parent_id, auditable_parent_type")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
