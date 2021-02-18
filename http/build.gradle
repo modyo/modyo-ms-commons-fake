@@ -1,15 +1,17 @@
 plugins {
     id "io.spring.dependency-management" version "1.0.8.RELEASE"
     id 'maven-publish'
+    id 'jacoco'
 }
 
 group 'com.modyo.ms.commons'
-version '2.5.4.1'
+version '2.5.5'
 
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
+apply plugin: 'jacoco'
 
 compileJava {
     sourceCompatibility = 11
@@ -64,13 +66,65 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'com.modyo.ms.commons:core:2.5.4.1-RELEASE'
+    implementation 'com.modyo.ms.commons:core:2.5.5-RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly "org.springframework.boot:spring-boot-configuration-processor"
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+    implementation group: 'org.zalando', name: 'logbook-core', version: '2.5.0'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'junit:junit:4.12'
 }
+
+jacoco {
+    toolVersion = "0.8.5"
+}
+
+def jacocoExclude = ['**/dtos/**', '**/exceptions/**', '**/constants/**', '**/loggers/**']
+
+jacocoTestReport {
+    afterEvaluate {
+        getClassDirectories().setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExclude)
+        })
+    }
+}
+
+jacocoTestCoverageVerification {
+
+    afterEvaluate {
+        getClassDirectories().setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude: jacocoExclude)
+        })
+    }
+    violationRules {
+
+        rule {
+            element = 'BUNDLE'
+            limit {
+                counter = 'INSTRUCTION'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.00
+            }
+            excludes = [
+                    'com/modyo/ms/commons/core/dtos/*'
+            ]
+        }
+    }
+
+}
+
+test.finalizedBy jacocoTestReport
+check.dependsOn jacocoTestCoverageVerification
+

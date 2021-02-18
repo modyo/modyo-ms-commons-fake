@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -31,7 +32,7 @@ public class RestTemplateLoggerInterceptor implements ClientHttpRequestIntercept
     Date tsRequest = new Date(System.currentTimeMillis());
     RestTemplateRequestLogger restTemplateRequestLogger = logRequest(request, body);
     ClientHttpResponse response = execution.execute(request, body);
-    RestTemplateResponseLogger restTemplateResponseLogger = logResponse(response, tsRequest);
+    RestTemplateResponseLogger restTemplateResponseLogger = logResponse(response, tsRequest, request.getHeaders());
     restTemplateInterceptorService.ifPresent(service ->
         service.intercept(restTemplateRequestLogger, restTemplateResponseLogger));
     return response;
@@ -49,10 +50,11 @@ public class RestTemplateLoggerInterceptor implements ClientHttpRequestIntercept
     return restTemplateRequestLogger;
   }
 
-  private RestTemplateResponseLogger logResponse(ClientHttpResponse response, Date tsRequest) throws IOException {
+  private RestTemplateResponseLogger logResponse(ClientHttpResponse response, Date tsRequest, HttpHeaders requestHeaders) throws IOException {
     RestTemplateResponseLogger restTemplateResponseLogger = new RestTemplateResponseLogger(
         response.getStatusCode().value(),
         response.getHeaders(),
+        requestHeaders,
         responseBodyString(response),
         tsRequest);
     restTemplateResponseLogger.logInfo();
