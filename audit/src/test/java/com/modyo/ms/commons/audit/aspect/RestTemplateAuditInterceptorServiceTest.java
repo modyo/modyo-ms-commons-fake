@@ -55,7 +55,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(HttpStatus.CREATED.value(), new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(HttpStatus.CREATED.value(), new HttpHeaders(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         isNull(), any(AuditResponseDto.class),
@@ -74,7 +74,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(HttpStatus.BAD_REQUEST.value(), new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(HttpStatus.BAD_REQUEST.value(), new HttpHeaders(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
@@ -94,7 +94,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(HttpStatus.OK.value(), new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(HttpStatus.OK.value(), new HttpHeaders(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.INFO),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
@@ -111,7 +111,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(null, new HttpHeaders(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
@@ -128,7 +128,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(null, new HttpHeaders(), new HttpHeaders(), null, null));
     then(createAuditLogService).should(never()).log(any(),
         any(), any(), any(),
         any(), any(),
@@ -146,7 +146,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(null, new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(null, new HttpHeaders(), new HttpHeaders(), null, null));
 
     then(createAuditLogService).should(never()).log(any(),
         any(), any(), any(),
@@ -167,7 +167,7 @@ class RestTemplateAuditInterceptorServiceTest {
     serviceUnderTest.intercept(
         new RestTemplateRequestLogger(
             null, null, new HttpHeaders(), null, Collections.emptyList()),
-        new RestTemplateResponseLogger(HttpStatus.REQUEST_TIMEOUT.value(), new HttpHeaders(), null, null));
+        new RestTemplateResponseLogger(HttpStatus.REQUEST_TIMEOUT.value(), new HttpHeaders(), new HttpHeaders(), null, null));
     then(createAuditLogService).should().log(eq(AuditLogType.ERROR),
         eq(childEntityId), eq(parentEntityId), eq(parentEntity),
         any(RestTemplateRequestLogger.class), any(RestTemplateResponseLogger.class),
