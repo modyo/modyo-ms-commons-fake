@@ -21,6 +21,7 @@ import io.swagger.models.properties.StringProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -38,17 +39,6 @@ import springfox.documentation.swagger2.mappers.ServiceModelToSwagger2Mapper;
 @Component
 public class SwaggerCustomizer {
 
-  @Value("${server.port}")
-  private String serverPort;
-
-  private final String hostNameOverride;
-  private final ApiGwSwaggerProperties swaggerProperties;
-  private final OptionsMockOperationBuilder optionsMockOperationBuilder;
-  private final ServiceModelToSwagger2Mapper mapper;
-  private final DocumentationCache documentationCache;
-
-  private Swagger swagger;
-
   private static final List<String> RESPONSE_PARAMETERS = List.of(
       HttpHeaders.CONTENT_DISPOSITION,
       HttpHeaders.CONTENT_LENGTH,
@@ -56,6 +46,14 @@ public class SwaggerCustomizer {
       CustomHttpHeaders.CORRELATION_ID,
       CustomHttpHeaders.APPLICATION_NAME
   );
+  private final String hostNameOverride;
+  private final ApiGwSwaggerProperties swaggerProperties;
+  private final OptionsMockOperationBuilder optionsMockOperationBuilder;
+  private final ServiceModelToSwagger2Mapper mapper;
+  private final DocumentationCache documentationCache;
+  @Value("${server.port}")
+  private String serverPort;
+  private Swagger swagger;
 
   @Autowired
   public SwaggerCustomizer(
@@ -87,14 +85,15 @@ public class SwaggerCustomizer {
     }
     setSwaggerApiGwCors();
     swagger.setSecurityDefinitions(getSecurityDefinitions());
-    swagger.getDefinitions().forEach((modelName, model) -> model
-        .getProperties().forEach((propertyName, property) -> {
-          property.setExample((Object) null);
-          if (property instanceof StringProperty
-              && ((StringProperty) property).getEnum() != null) {
-            ((StringProperty) property).setEnum(null);
-          }
-        }));
+    swagger.getDefinitions().forEach(
+        (modelName, model) -> Optional.ofNullable(model.getProperties()).orElse(new HashMap<>())
+            .forEach((propertyName, property) -> {
+              property.setExample((Object) null);
+              if (property instanceof StringProperty
+                  && ((StringProperty) property).getEnum() != null) {
+                ((StringProperty) property).setEnum(null);
+              }
+            }));
     return swagger;
   }
 
