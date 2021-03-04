@@ -178,7 +178,7 @@ public class SwaggerCustomizer {
   private Map<String, Object> buildRequestParameters(Operation operation) {
     operation.getParameters().add(originHeader());
     return operation.getParameters().stream()
-        .filter(parameter -> !parameter.getIn().equals("body"))
+        .filter(parameter -> !parameter.getIn().equals("body") && !parameter.getIn().equals("formData"))
         .collect(Collectors.toMap(
             parameter -> I_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName(),
             parameter -> M_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName()));
