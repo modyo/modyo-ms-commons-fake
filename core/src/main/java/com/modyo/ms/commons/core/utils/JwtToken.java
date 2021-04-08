@@ -5,13 +5,14 @@ import com.modyo.ms.commons.core.exceptions.CustomValidationException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
+import lombok.Getter;
 import lombok.Value;
 
-@Value
+@Getter
 public class JwtToken {
 
-  String value;
-  Map<String,Object> claims;
+  private final String value;
+  private final Map<String,Object> claims;
 
   public JwtToken(String token) {
     this.value = token;
