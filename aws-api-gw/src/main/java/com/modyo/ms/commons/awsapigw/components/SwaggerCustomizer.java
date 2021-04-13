@@ -23,6 +23,7 @@ import io.swagger.models.properties.StringProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -83,7 +84,7 @@ public class SwaggerCustomizer {
     swagger.getInfo().setTitle(swaggerProperties.getApigatewayName());
     setSwaggerBinaryMediaTypes();
 
-    this.addSwaggerUiPath();
+    this.addSwaggerDocPath();
 
     swagger.getPaths().forEach(this::addVendorExtensions);
     if (swaggerProperties.getXAmazonApigatewayCors().getEnableMockOptionMethods()) {
@@ -104,10 +105,10 @@ public class SwaggerCustomizer {
     return swagger;
   }
 
-  private void addSwaggerUiPath() {
-    String getSwaggerUiTagName = "getSwaggerUi";
-    String getSwaggerUiTagDescription = "getSwaggerUi";
-    addSwaggerUiTag(getSwaggerUiTagName, getSwaggerUiTagDescription);
+  private void addSwaggerDocPath() {
+    String getSwaggerUiTagName = "getSwaggerDoc";
+    String getSwaggerUiTagDescription = "get the swagger doc";
+    addSwaggerDocTag(getSwaggerUiTagName, getSwaggerUiTagDescription);
 
     Operation getSwaggerOperation = new Operation()
         .tags(List.of(getSwaggerUiTagName))
@@ -115,16 +116,30 @@ public class SwaggerCustomizer {
         .operationId(getSwaggerUiTagName)
         .produces(MediaType.APPLICATION_JSON_VALUE)
         ;
-    getSwaggerOperation.addResponse(String.valueOf(HttpStatus.OK.value()), new Response()
-        .description(HttpStatus.OK.toString())
-    );
+    addResponseToOperation(getSwaggerOperation);
 
-    this.swagger.getPaths().put("/swagger-ui.html", new Path()
+    this.swagger.getPaths().put("/api-docs", new Path()
         .get(getSwaggerOperation)
     );
   }
 
-  private void addSwaggerUiTag(String getSwaggerUiTagName, String getSwaggerUiTagDescription) {
+  private void addResponseToOperation(Operation getSwaggerOperation) {
+    HttpStatus okResponseStatus = HttpStatus.OK;
+    String okResponseKey = String.valueOf(okResponseStatus.value());
+    Response okResponse = this.swagger.getPaths().values().stream()
+        .map(path -> path.getOperationMap().values().stream()
+            .findFirst()
+            .orElse(null))
+        .filter(Objects::nonNull)
+        .map(operation -> operation.getResponses().get(String.valueOf(okResponseStatus.value())))
+        .findFirst()
+        .orElse(null);
+
+    getSwaggerOperation.addResponse(okResponseKey, okResponse);
+
+  }
+
+  private void addSwaggerDocTag(String getSwaggerUiTagName, String getSwaggerUiTagDescription) {
     this.swagger.getTags().add(
         new Tag().name(getSwaggerUiTagName).description(getSwaggerUiTagDescription));
   }
