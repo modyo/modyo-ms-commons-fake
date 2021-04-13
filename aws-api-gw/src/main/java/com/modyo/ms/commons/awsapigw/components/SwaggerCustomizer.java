@@ -14,13 +14,16 @@ import com.modyo.ms.commons.core.constants.HandledHttpStatus;
 import com.modyo.ms.commons.http.constants.CustomHttpHeaders;
 import io.swagger.models.Operation;
 import io.swagger.models.Path;
+import io.swagger.models.Response;
 import io.swagger.models.Swagger;
+import io.swagger.models.Tag;
 import io.swagger.models.auth.SecuritySchemeDefinition;
 import io.swagger.models.parameters.HeaderParameter;
 import io.swagger.models.properties.StringProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponents;
 import springfox.documentation.service.Documentation;
@@ -78,6 +83,9 @@ public class SwaggerCustomizer {
     setSwaggerHostAndBasePath(request);
     swagger.getInfo().setTitle(swaggerProperties.getApigatewayName());
     setSwaggerBinaryMediaTypes();
+
+    this.addSwaggerDocPath();
+
     swagger.getPaths().forEach(this::addVendorExtensions);
     if (swaggerProperties.getXAmazonApigatewayCors().getEnableMockOptionMethods()) {
       swagger.getPaths().forEach((pathString, pathObject) -> pathObject
@@ -95,6 +103,45 @@ public class SwaggerCustomizer {
               }
             }));
     return swagger;
+  }
+
+  private void addSwaggerDocPath() {
+    String getSwaggerUiTagName = "getSwaggerDoc";
+    String getSwaggerUiTagDescription = "get the swagger doc";
+    addSwaggerDocTag(getSwaggerUiTagName, getSwaggerUiTagDescription);
+
+    Operation getSwaggerOperation = new Operation()
+        .tags(List.of(getSwaggerUiTagName))
+        .summary(getSwaggerUiTagDescription)
+        .operationId(getSwaggerUiTagName)
+        .produces(MediaType.APPLICATION_JSON_VALUE)
+        ;
+    addResponseToOperation(getSwaggerOperation);
+
+    this.swagger.getPaths().put("/api-docs", new Path()
+        .get(getSwaggerOperation)
+    );
+  }
+
+  private void addResponseToOperation(Operation getSwaggerOperation) {
+    HttpStatus okResponseStatus = HttpStatus.OK;
+    String okResponseKey = String.valueOf(okResponseStatus.value());
+    Response okResponse = this.swagger.getPaths().values().stream()
+        .map(path -> path.getOperationMap().values().stream()
+            .findFirst()
+            .orElse(null))
+        .filter(Objects::nonNull)
+        .map(operation -> operation.getResponses().get(String.valueOf(okResponseStatus.value())))
+        .findFirst()
+        .orElse(null);
+
+    getSwaggerOperation.addResponse(okResponseKey, okResponse);
+
+  }
+
+  private void addSwaggerDocTag(String getSwaggerUiTagName, String getSwaggerUiTagDescription) {
+    this.swagger.getTags().add(
+        new Tag().name(getSwaggerUiTagName).description(getSwaggerUiTagDescription));
   }
 
   private void setSwaggerHostAndBasePath(HttpServletRequest request) {
