@@ -17,6 +17,9 @@ import org.springframework.validation.annotation.Validated;
 public class ApiGwSwaggerProperties {
 
   private String apigatewayName;
+
+  private boolean exposeApiDocEndpoint = false;
+
   private List<String> xAmazonApigatewayBinaryMediaTypes = new ArrayList<>();
   @NotNull private IntegrationProperties xAmazonApigatewayIntegration;
   private List<SecurityDefinitionProperties> securityDefinitions = new ArrayList<>();
