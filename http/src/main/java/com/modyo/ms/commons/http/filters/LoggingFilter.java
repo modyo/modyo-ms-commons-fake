@@ -1,6 +1,7 @@
 package com.modyo.ms.commons.http.filters;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.modyo.ms.commons.core.loggers.CommonsLogger;
 import com.modyo.ms.commons.http.config.properties.LoggingFilterProperties;
 import com.modyo.ms.commons.http.loggers.RequestLogger;
 import com.modyo.ms.commons.http.loggers.ResponseLogger;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class LoggingFilter implements Filter {
       ServletResponse response,
       FilterChain chain) throws IOException, ServletException {
     if (loggingFilterProperties.isEnabled()) {
+      setRequestIdToContext((HttpServletRequest) request);
       Date tsRequest = new Date(System.currentTimeMillis());
       logRequest((HttpServletRequest) request);
       chain.doFilter(request, response);
@@ -41,6 +44,12 @@ public class LoggingFilter implements Filter {
     } else {
       chain.doFilter(request, response);
     }
+  }
+
+  private void setRequestIdToContext(HttpServletRequest httpServletRequest) {
+    String xRequestId = httpServletRequest.getHeader("x-request-id");
+    RequestContextHolder.currentRequestAttributes().setAttribute(
+        CommonsLogger.REQUEST_ID_KEY, xRequestId, 0);
   }
 
   private void logRequest(HttpServletRequest request) {
