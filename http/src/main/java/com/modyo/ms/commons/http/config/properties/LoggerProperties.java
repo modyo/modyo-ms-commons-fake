@@ -27,5 +27,4 @@ abstract class LoggerProperties {
     private List<String> headers = Collections.emptyList();
 
   }
-
 }
