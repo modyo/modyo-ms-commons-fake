@@ -14,11 +14,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 @Setter
 public abstract class CommonsLogger {
 
+  public static final String REQUEST_ID_KEY = "requestId";
+  public static final String CORRELATION_ID_KEY = "correlationId";
   @JsonIgnore
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   private String type;
   private String correlationId;
+  private String requestId;
   private String message;
 
   public void logInfo() {
@@ -33,8 +36,9 @@ public abstract class CommonsLogger {
 
   public void setBasicLogInformation() {
     this.correlationId = Objects.requireNonNull(
-        RequestContextHolder.currentRequestAttributes().getAttribute("correlationId", 0)
+        RequestContextHolder.currentRequestAttributes().getAttribute(CORRELATION_ID_KEY, 0)
     ).toString();
+    this.requestId = (String) RequestContextHolder.currentRequestAttributes().getAttribute(REQUEST_ID_KEY, 0);
   }
 
 }
