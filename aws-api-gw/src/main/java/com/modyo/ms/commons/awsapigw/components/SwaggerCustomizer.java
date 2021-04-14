@@ -84,7 +84,9 @@ public class SwaggerCustomizer {
     swagger.getInfo().setTitle(swaggerProperties.getApigatewayName());
     setSwaggerBinaryMediaTypes();
 
-    this.addSwaggerDocPath();
+    if (swaggerProperties.isExposeApiDocEndpoint()) {
+      this.addSwaggerDocPath();
+    }
 
     swagger.getPaths().forEach(this::addVendorExtensions);
     if (swaggerProperties.getXAmazonApigatewayCors().getEnableMockOptionMethods()) {
