@@ -44,7 +44,8 @@ public class SwaggerConfig {
       HttpHeaders.CONTENT_LENGTH,
       HttpHeaders.CONTENT_TYPE,
       CustomHttpHeaders.APPLICATION_NAME,
-      CustomHttpHeaders.CORRELATION_ID);
+      CustomHttpHeaders.CORRELATION_ID,
+      CustomHttpHeaders.AWS_REQUEST_ID);
 
   private static final List<RequestMethod> REQUEST_METHODS = List.of(
       RequestMethod.GET,
