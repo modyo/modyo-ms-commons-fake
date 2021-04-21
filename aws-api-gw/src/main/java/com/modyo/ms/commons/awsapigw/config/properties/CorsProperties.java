@@ -31,7 +31,8 @@ public class CorsProperties {
   private List<String> exposeHeaders = List.of(
       HttpHeaders.CONTENT_DISPOSITION,
       CustomHttpHeaders.APPLICATION_NAME,
-      CustomHttpHeaders.CORRELATION_ID);
+      CustomHttpHeaders.CORRELATION_ID,
+      CustomHttpHeaders.AWS_REQUEST_ID);
 
   private Integer maxAge = 3600;
 
