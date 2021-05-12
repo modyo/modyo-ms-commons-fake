@@ -36,6 +36,9 @@ public class ResponseHeadersFilter implements Filter {
     String correlationId = Objects.requireNonNullElse(
         RequestContextHolder.currentRequestAttributes().getAttribute("correlationId", 0), "").toString();
     response.addHeader(CustomHttpHeaders.CORRELATION_ID, correlationId);
+    String requestId = Objects.requireNonNullElse(
+        RequestContextHolder.currentRequestAttributes().getAttribute("requestId", 0), "").toString();
+    response.addHeader(CustomHttpHeaders.AWS_REQUEST_ID, requestId);
     if (applicationName != null) {
       response.addHeader(CustomHttpHeaders.APPLICATION_NAME, applicationName);
     }

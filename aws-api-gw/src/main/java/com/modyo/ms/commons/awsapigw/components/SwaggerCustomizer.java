@@ -49,6 +49,7 @@ public class SwaggerCustomizer {
       HttpHeaders.CONTENT_LENGTH,
       HttpHeaders.CONTENT_TYPE,
       CustomHttpHeaders.CORRELATION_ID,
+      CustomHttpHeaders.AWS_REQUEST_ID,
       CustomHttpHeaders.APPLICATION_NAME
   );
   private final String hostNameOverride;
