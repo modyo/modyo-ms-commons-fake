@@ -47,7 +47,7 @@ public class LoggingFilter implements Filter {
   }
 
   private void setRequestIdToContext(HttpServletRequest httpServletRequest) {
-    String xRequestId = httpServletRequest.getHeader("x-request-id");
+    String xRequestId = httpServletRequest.getHeader("x-amzn-requestid");
     RequestContextHolder.currentRequestAttributes().setAttribute(
         CommonsLogger.REQUEST_ID_KEY, xRequestId, 0);
   }
