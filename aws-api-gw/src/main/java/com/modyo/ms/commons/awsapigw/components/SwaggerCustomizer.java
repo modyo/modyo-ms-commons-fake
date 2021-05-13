@@ -226,20 +226,27 @@ public class SwaggerCustomizer {
   }
 
   private Map<String, Object> buildRequestParameters(Operation operation) {
-    operation.getParameters().add(originHeader());
+    String amznRequestIdHeaderName = "X-Amzn-Requestid";
+    operation.getParameters().add(header("Origin"));
+    operation.getParameters().add(header(amznRequestIdHeaderName));
     return operation.getParameters().stream()
         .filter(parameter -> !parameter.getIn().equals("body") && !parameter.getIn().equals("formData"))
         .collect(Collectors.toMap(
             parameter -> I_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName(),
-            parameter -> M_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName()));
+            parameter -> parameter.getName().contains(amznRequestIdHeaderName)
+                          // used to map the header "X-Amzn-Requestid".
+                          // Unfortunately AWS Gateway does not send it via the header, but its available through the context
+                          ? "context.requestId"
+                          : M_REQ_PREFIX + getParamType(parameter.getIn()) + "." + parameter.getName()
+            ));
   }
 
-  private HeaderParameter originHeader() {
+  private HeaderParameter header(String headerName) {
     HeaderParameter headerParameter = new HeaderParameter();
     headerParameter.setType("string");
     headerParameter.setIn("header");
-    headerParameter.setName("Origin");
-    headerParameter.setDescription("Origin");
+    headerParameter.setName(headerName);
+    headerParameter.setDescription(headerName);
     return headerParameter;
   }
 
